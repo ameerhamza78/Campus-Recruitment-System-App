@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CRS 2025</string>
+    <string name="app_name">Campus Recruitment System</string>
         <string-array name="roles">
             <item>Admin</item>
             <item>Student</item>
