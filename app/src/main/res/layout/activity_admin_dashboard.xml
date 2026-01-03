@@ -7,15 +7,15 @@
     android:background="#F5F5F5"
     tools:context=".dashboards.AdminDashboardActivity">
 
-    <!-- Header with CORRECT Blue Color -->
+    <!-- Header -->
     <LinearLayout
         android:id="@+id/header_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/brand_blue"
+        android:elevation="4dp"
         android:orientation="vertical"
-        android:padding="16dp"
-        android:elevation="4dp">
+        android:padding="16dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -30,18 +30,18 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/header_layout"
-        android:layout_above="@id/btn_logout">
+        android:layout_above="@id/btn_logout"
+        android:layout_below="@id/header_layout">
 
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:columnCount="2"
-            android:padding="12dp"
             android:alignmentMode="alignMargins"
-            android:columnOrderPreserved="false">
+            android:columnCount="2"
+            android:columnOrderPreserved="false"
+            android:padding="12dp">
 
-            <!-- Card for Manage Students with CORRECT Styling -->
+            <!-- Card for Manage Students -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/card_manage_students"
                 android:layout_width="0dp"
@@ -55,29 +55,29 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:orientation="vertical"
-                    android:padding="16dp"
-                    android:gravity="center">
+                    android:padding="16dp">
 
                     <ImageView
                         android:layout_width="64dp"
                         android:layout_height="64dp"
+                        android:contentDescription="Manage Students"
                         android:src="@drawable/ic_manage_students"
-                        app:tint="@color/brand_blue"
-                        android:contentDescription="Manage Students"/>
+                        app:tint="@color/brand_blue" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="Manage Students"
-                        android:textColor="#333333"
                         android:textAlignment="center"
+                        android:textColor="#333333"
                         android:textStyle="bold" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Card for Manage Companies with CORRECT Styling -->
+            <!-- Card for Manage Companies -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/card_manage_companies"
                 android:layout_width="0dp"
@@ -91,29 +91,29 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:orientation="vertical"
-                    android:padding="16dp"
-                    android:gravity="center">
+                    android:padding="16dp">
 
                     <ImageView
                         android:layout_width="64dp"
                         android:layout_height="64dp"
+                        android:contentDescription="Manage Companies"
                         android:src="@drawable/ic_manage_companies"
-                        app:tint="@color/brand_blue"
-                        android:contentDescription="Manage Companies"/>
+                        app:tint="@color/brand_blue" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="Manage Companies"
-                        android:textColor="#333333"
                         android:textAlignment="center"
+                        android:textColor="#333333"
                         android:textStyle="bold" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Card for Manage Applications with CORRECT Styling -->
+            <!-- Card for Manage Applications -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/card_manage_applications"
                 android:layout_width="0dp"
@@ -127,29 +127,29 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:orientation="vertical"
-                    android:padding="16dp"
-                    android:gravity="center">
+                    android:padding="16dp">
 
                     <ImageView
                         android:layout_width="64dp"
                         android:layout_height="64dp"
+                        android:contentDescription="Manage Applications"
                         android:src="@drawable/ic_manage_applications"
-                        app:tint="@color/brand_blue"
-                        android:contentDescription="Manage Applications"/>
+                        app:tint="@color/brand_blue" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="Manage Applications"
-                        android:textColor="#333333"
                         android:textAlignment="center"
+                        android:textColor="#333333"
                         android:textStyle="bold" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Card for Manage Jobs with CORRECT Styling -->
+            <!-- Card for Manage Jobs -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/card_manage_jobs"
                 android:layout_width="0dp"
@@ -163,24 +163,96 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:orientation="vertical"
-                    android:padding="16dp"
-                    android:gravity="center">
+                    android:padding="16dp">
 
                     <ImageView
                         android:layout_width="64dp"
                         android:layout_height="64dp"
+                        android:contentDescription="Manage Jobs"
                         android:src="@drawable/ic_manage_jobs"
-                        app:tint="@color/brand_blue"
-                        android:contentDescription="Manage Jobs"/>
+                        app:tint="@color/brand_blue" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="Manage Jobs"
-                        android:textColor="#333333"
                         android:textAlignment="center"
+                        android:textColor="#333333"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+            
+            <!-- NEW: Card for Manage Interviews -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_manage_interviews"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="8dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:contentDescription="Manage Interviews"
+                        android:src="@drawable/ic_manage_interviews"
+                        app:tint="@color/brand_blue" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Manage Interviews"
+                        android:textAlignment="center"
+                        android:textColor="#333333"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+            
+            <!-- NEW: Card for Manage Feedbacks -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_manage_feedbacks"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="8dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:contentDescription="Manage Feedbacks"
+                        android:src="@drawable/ic_manage_feedbacks"
+                        app:tint="@color/brand_blue" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Manage Feedbacks"
+                        android:textAlignment="center"
+                        android:textColor="#333333"
                         android:textStyle="bold" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -196,10 +268,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_margin="24dp"
+        android:padding="12dp"
         android:text="Logout"
         android:textColor="#D32F2F"
-        app:strokeColor="#D32F2F"
         app:cornerRadius="12dp"
-        android:padding="12dp"/>
+        app:strokeColor="#D32F2F" />
 
 </RelativeLayout>
