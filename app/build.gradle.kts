@@ -44,6 +44,7 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.ext.junit)
     implementation(libs.espresso.contrib)
+    implementation("androidx.core:core-splashscreen:1.0.1")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
