@@ -2,44 +2,39 @@ package com.example.crs2025.dashboards;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.example.crs2025.R;
 import com.example.crs2025.admin.ManageStudentsActivity;
 import com.example.crs2025.admin.ManageCompaniesActivity;
 import com.example.crs2025.admin.ManageApplicationsActivity;
 import com.example.crs2025.admin.ManageJobsActivity;
-import com.example.crs2025.admin.ManageInterviewsActivity;
-import com.example.crs2025.admin.ManageFeedbacksActivity;
 import com.example.crs2025.activities.LoginActivity;
 
 public class AdminDashboardActivity extends AppCompatActivity {
 
-    private Button btnManageStudents, btnManageCompanies, btnManageApplications, btnManageJobs, btnManageInterviews, btnManageFeedbacks, btnLogout;
+    private CardView cardManageStudents, cardManageCompanies, cardManageApplications, cardManageJobs;
+    private Button btnLogout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_dashboard);
 
-        // Initialize buttons
-        btnManageStudents = findViewById(R.id.btn_manage_students);
-        btnManageCompanies = findViewById(R.id.btn_manage_companies);
-        btnManageApplications = findViewById(R.id.btn_manage_applications);
-        btnManageJobs = findViewById(R.id.btn_manage_jobs);
-        btnManageInterviews = findViewById(R.id.btn_manage_interviews);
-        btnManageFeedbacks = findViewById(R.id.btn_manage_feedbacks);
+        // Initialize CardViews
+        cardManageStudents = findViewById(R.id.card_manage_students);
+        cardManageCompanies = findViewById(R.id.card_manage_companies);
+        cardManageApplications = findViewById(R.id.card_manage_applications);
+        cardManageJobs = findViewById(R.id.card_manage_jobs);
         btnLogout = findViewById(R.id.btn_logout);
 
         // Set click listeners
-        btnManageStudents.setOnClickListener(v -> startActivity(new Intent(AdminDashboardActivity.this, ManageStudentsActivity.class)));
-        btnManageCompanies.setOnClickListener(v -> startActivity(new Intent(AdminDashboardActivity.this, ManageCompaniesActivity.class)));
-        btnManageApplications.setOnClickListener(v -> startActivity(new Intent(AdminDashboardActivity.this, ManageApplicationsActivity.class)));
-        btnManageJobs.setOnClickListener(v -> startActivity(new Intent(AdminDashboardActivity.this, ManageJobsActivity.class)));
-        btnManageInterviews.setOnClickListener(v -> startActivity(new Intent(AdminDashboardActivity.this, ManageInterviewsActivity.class)));
-        btnManageFeedbacks.setOnClickListener(v -> startActivity(new Intent(AdminDashboardActivity.this, ManageFeedbacksActivity.class)));
+        cardManageStudents.setOnClickListener(v -> startActivity(new Intent(AdminDashboardActivity.this, ManageStudentsActivity.class)));
+        cardManageCompanies.setOnClickListener(v -> startActivity(new Intent(AdminDashboardActivity.this, ManageCompaniesActivity.class)));
+        cardManageApplications.setOnClickListener(v -> startActivity(new Intent(AdminDashboardActivity.this, ManageApplicationsActivity.class)));
+        cardManageJobs.setOnClickListener(v -> startActivity(new Intent(AdminDashboardActivity.this, ManageJobsActivity.class)));
 
         btnLogout.setOnClickListener(v -> {
             // Logout logic (Redirect to LoginActivity)

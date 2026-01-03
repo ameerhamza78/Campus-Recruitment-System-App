@@ -1,75 +1,205 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:padding="20dp"
-    android:background="@android:color/white">
+    android:background="#F5F5F5"
+    tools:context=".dashboards.AdminDashboardActivity">
 
-    <TextView
+    <!-- Header with CORRECT Blue Color -->
+    <LinearLayout
+        android:id="@+id/header_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Welcome Admin 👨‍💻"
-        android:textSize="28sp"
-        android:gravity="center"
-        android:textStyle="bold"
-        android:fontFamily="monospace"
-        android:textColor="@android:color/black"
-        android:layout_marginBottom="30dp"/>
+        android:background="@color/brand_blue"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:elevation="4dp">
 
-    <Button
-        android:id="@+id/btn_manage_students"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:text="Manage Students"
-        android:backgroundTint="#27187e"
-        style="@style/DashboardButtonStyle"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Admin Dashboard"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
-    <Button
-        android:id="@+id/btn_manage_companies"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:text="Manage Companies"
-        android:backgroundTint="#27187e"
-        style="@style/DashboardButtonStyle"/>
+    <!-- Grid of options in a ScrollView -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/header_layout"
+        android:layout_above="@id/btn_logout">
 
-    <Button
-        android:id="@+id/btn_manage_applications"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:text="Manage Applications"
-        android:backgroundTint="#27187e"
-        style="@style/DashboardButtonStyle"/>
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:padding="12dp"
+            android:alignmentMode="alignMargins"
+            android:columnOrderPreserved="false">
 
-    <Button
-        android:id="@+id/btn_manage_jobs"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:text="Manage Jobs"
-        android:backgroundTint="#27187e"
-        style="@style/DashboardButtonStyle"/>
+            <!-- Card for Manage Students with CORRECT Styling -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_manage_students"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="8dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
 
-    <Button
-        android:id="@+id/btn_manage_interviews"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:text="Manage Interviews"
-        android:backgroundTint="#27187e"
-        style="@style/DashboardButtonStyle"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:gravity="center">
 
-    <Button
-        android:id="@+id/btn_manage_feedbacks"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:text="Manage Feedbacks"
-        android:backgroundTint="#27187e"
-        style="@style/DashboardButtonStyle"/>
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:src="@drawable/ic_manage_students"
+                        app:tint="@color/brand_blue"
+                        android:contentDescription="Manage Students"/>
 
-    <Button
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Manage Students"
+                        android:textColor="#333333"
+                        android:textAlignment="center"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Card for Manage Companies with CORRECT Styling -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_manage_companies"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="8dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:src="@drawable/ic_manage_companies"
+                        app:tint="@color/brand_blue"
+                        android:contentDescription="Manage Companies"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Manage Companies"
+                        android:textColor="#333333"
+                        android:textAlignment="center"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Card for Manage Applications with CORRECT Styling -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_manage_applications"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="8dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:src="@drawable/ic_manage_applications"
+                        app:tint="@color/brand_blue"
+                        android:contentDescription="Manage Applications"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Manage Applications"
+                        android:textColor="#333333"
+                        android:textAlignment="center"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Card for Manage Jobs with CORRECT Styling -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_manage_jobs"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="8dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:src="@drawable/ic_manage_jobs"
+                        app:tint="@color/brand_blue"
+                        android:contentDescription="Manage Jobs"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Manage Jobs"
+                        android:textColor="#333333"
+                        android:textAlignment="center"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+        </GridLayout>
+    </ScrollView>
+
+    <!-- Logout Button -->
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_logout"
-        android:layout_width="300dp"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="24dp"
         android:text="Logout"
-        android:backgroundTint="#da2c38"
-        style="@style/DashboardButtonStyle"/>
-</LinearLayout>
+        android:textColor="#D32F2F"
+        app:strokeColor="#D32F2F"
+        app:cornerRadius="12dp"
+        android:padding="12dp"/>
+
+</RelativeLayout>

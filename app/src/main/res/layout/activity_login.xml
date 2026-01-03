@@ -1,88 +1,162 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:padding="16dp"
-    android:background="@color/background_light"
-    android:orientation="vertical"
+    android:background="@android:color/white"
     tools:context=".activities.LoginActivity">
 
+    <!-- Blue slanted background -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_alignParentTop="true"
+        android:background="#0077b6"
+        android:rotation="-15"
+        android:translationY="-80dp"
+        android:translationX="-80dp" />
+
+    <!-- Header -->
+    <TextView
+        android:id="@+id/login_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="60dp"
+        android:text="Welcome Back,"
+        android:textColor="@android:color/white"
+        android:textSize="32sp"
+        android:textStyle="bold" />
+    <TextView
+        android:id="@+id/login_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/login_title"
+        android:layout_marginStart="24dp"
+        android:text="please sign in to continue."
+        android:textColor="@android:color/white"
+        android:alpha="0.8"
+        android:textSize="16sp" />
+
+    <!-- Form Section -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="24dp"
-        android:background="@drawable/rounded_card"
+        android:layout_centerVertical="true"
         android:orientation="vertical"
-        android:elevation="4dp">
+        android:padding="24dp">
 
-        <!-- Role Selection -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Select Role"
+            android:text="Select your role"
+            android:textColor="#333333"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="@color/black"
-            android:paddingBottom="4dp"/>
+            android:layout_marginBottom="12dp"/>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <!-- VISUAL ROLE SELECTOR -->
+        <RadioGroup
+            android:id="@+id/role_selector_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:endIconMode="none">
+            android:orientation="horizontal"
+            android:layout_marginBottom="20dp">
 
-            <Spinner
-                android:id="@+id/spinner_role"
-                android:layout_width="match_parent"
+            <RadioButton
+                android:id="@+id/role_admin"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:entries="@array/roles"
-                android:background="@android:color/transparent"/>
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_weight="1"
+                android:background="@drawable/role_card_background"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingVertical="16dp"
+                android:text="Admin"
+                android:textColor="@color/role_card_text_color"
+                android:textStyle="bold"
+                android:checked="true"
+                android:layout_marginEnd="8dp"/>
 
-        <!-- Email Input -->
+            <RadioButton
+                android:id="@+id/role_student"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/role_card_background"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingVertical="16dp"
+                android:text="Student"
+                android:textColor="@color/role_card_text_color"
+                android:textStyle="bold"
+                android:layout_marginEnd="8dp"/>
+
+            <RadioButton
+                android:id="@+id/role_company"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/role_card_background"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingVertical="16dp"
+                android:text="Company"
+                android:textColor="@color/role_card_text_color"
+                android:textStyle="bold" />
+        </RadioGroup>
+
+        <!-- Email and Password Fields with HIGH CONTRAST hints -->
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:endIconMode="clear_text"
-            android:layout_marginTop="12dp">
+            android:hint="Email"
+            android:textColorHint="#555555"
+            app:boxStrokeColor="#0077b6"
+            app:hintTextColor="#0077b6">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                android:hint="Email"/>
+                android:textColor="#333333"
+                android:inputType="textEmailAddress" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Password Input -->
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:endIconMode="password_toggle"
-            android:layout_marginTop="12dp">
+            android:layout_marginTop="12dp"
+            android:hint="Password"
+            android:textColorHint="#555555"
+            app:boxStrokeColor="#0077b6"
+            app:hintTextColor="#0077b6"
+            app:passwordToggleEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:hint="Password"/>
+                android:textColor="#333333"
+                android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Login Button -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_login"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Login"
-            android:layout_marginTop="20dp"
-            app:cornerRadius="16dp"
-            android:backgroundTint="#f26419"
-            android:layout_gravity="center"
-            android:fontFamily="monospace"
-            android:textSize="18sp"
-            android:textStyle="bold"/>
     </LinearLayout>
-</LinearLayout>
+
+    <!-- Login Button with CORRECT background and BLACK text -->
+    <Button
+        android:id="@+id/btn_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="24dp"
+        android:background="@drawable/button_primary_background"
+        android:padding="14dp"
+        android:text="Login"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+</RelativeLayout>

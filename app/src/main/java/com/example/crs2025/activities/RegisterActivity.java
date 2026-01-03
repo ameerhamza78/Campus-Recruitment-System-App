@@ -5,14 +5,12 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
+import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.crs2025.R;
@@ -25,8 +23,9 @@ import com.google.firebase.database.FirebaseDatabase;
 public class RegisterActivity extends AppCompatActivity {
 
     private EditText etName, etEmail, etAddress, etEnrollment, etBranch, etInstitute, etPassword, etConfirmPassword;
-    private Spinner spinnerRole;
+    private RadioGroup roleSelectorGroup;
     private Button btnRegister;
+    private LinearLayout studentFieldsLayout, addressLayout;
     private String selectedRole = "Student"; // Default role
 
     private DatabaseReference databaseReference;
@@ -37,6 +36,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        // Initialize Views
         etName = findViewById(R.id.et_name);
         etEmail = findViewById(R.id.et_email);
         etAddress = findViewById(R.id.et_address);
@@ -45,54 +45,54 @@ public class RegisterActivity extends AppCompatActivity {
         etInstitute = findViewById(R.id.et_institute);
         etPassword = findViewById(R.id.et_password);
         etConfirmPassword = findViewById(R.id.et_confirm_password);
-        spinnerRole = findViewById(R.id.spinner_role);
         btnRegister = findViewById(R.id.btn_register);
 
+        roleSelectorGroup = findViewById(R.id.role_selector_group);
+        studentFieldsLayout = findViewById(R.id.student_fields_layout);
+        addressLayout = findViewById(R.id.address_layout);
+
+
+        // Firebase Instances
         databaseReference = FirebaseDatabase.getInstance().getReference("users");
         mAuth = FirebaseAuth.getInstance();
 
-        // Set up spinner with roles
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.register_roles, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerRole.setAdapter(adapter);
-
-        spinnerRole.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedRole = parent.getItemAtPosition(position).toString();
-                toggleFieldsVisibility();
+        // Set up listener for the new visual role selector
+        roleSelectorGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId == R.id.role_student) {
+                selectedRole = "Student";
+            } else if (checkedId == R.id.role_company) {
+                selectedRole = "Company";
             }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            toggleFieldsVisibility();
         });
 
+
+        // Register button action
         btnRegister.setOnClickListener(v -> registerUser());
+
+        // Set initial visibility
+        toggleFieldsVisibility();
     }
 
     private void toggleFieldsVisibility() {
         if (selectedRole.equals("Student")) {
-            etEnrollment.setVisibility(View.VISIBLE);
-            etBranch.setVisibility(View.VISIBLE);
-            etInstitute.setVisibility(View.VISIBLE);
-        } else {
-            etEnrollment.setVisibility(View.GONE);
-            etBranch.setVisibility(View.GONE);
-            etInstitute.setVisibility(View.GONE);
+            studentFieldsLayout.setVisibility(View.VISIBLE);
+            addressLayout.setVisibility(View.GONE);
+        } else { // Company
+            studentFieldsLayout.setVisibility(View.GONE);
+            addressLayout.setVisibility(View.VISIBLE);
         }
     }
 
     private void registerUser() {
         String name = etName.getText().toString().trim();
         String email = etEmail.getText().toString().trim();
-        String address = etAddress.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
         String confirmPassword = etConfirmPassword.getText().toString().trim();
 
-        if (TextUtils.isEmpty(name) || TextUtils.isEmpty(email) || TextUtils.isEmpty(address) ||
-                TextUtils.isEmpty(password) || TextUtils.isEmpty(confirmPassword)) {
-            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+        // Basic validation for common fields
+        if (TextUtils.isEmpty(name) || TextUtils.isEmpty(email) || TextUtils.isEmpty(password) || TextUtils.isEmpty(confirmPassword)) {
+            Toast.makeText(this, "Please fill all required fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -106,7 +106,7 @@ public class RegisterActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
                         if (firebaseUser != null) {
-                            String userId = firebaseUser.getUid(); // Use Firebase UID as unique identifier
+                            String userId = firebaseUser.getUid();
                             User user;
 
                             if (selectedRole.equals("Student")) {
@@ -119,11 +119,19 @@ public class RegisterActivity extends AppCompatActivity {
                                     return;
                                 }
 
-                                user = new User(userId, name, email, address, "Student", enrollment, branch, institute, password);
-                                databaseReference.child("students").child(userId).setValue(user);
-                            } else {
-                                user = new User(userId, name, email, address, "Company", password);
-                                databaseReference.child("companies").child(userId).setValue(user);
+                                // For student, we pass a null or empty address.
+                                user = new User(userId, name, email, "", "Student", enrollment, branch, institute, password);
+                                databaseReference.child(userId).setValue(user);
+
+                            } else { // Company
+                                String address = etAddress.getText().toString().trim();
+                                if (TextUtils.isEmpty(address)) {
+                                    Toast.makeText(this, "Please fill company address", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                                // For company, student-specific fields are null.
+                                user = new User(userId, name, email, address, "Company", null, null, null, password);
+                                databaseReference.child(userId).setValue(user);
                             }
 
                             Toast.makeText(this, "Registration Successful", Toast.LENGTH_SHORT).show();
@@ -132,7 +140,7 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                     } else {
                         Log.e("RegisterActivity", "Registration failed", task.getException());
-                        Toast.makeText(this, "Registration failed. Please try again.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Registration failed. " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
     }

@@ -17,5 +17,6 @@
     <color name="background_light">#f0f0f0</color>
     <color name="material_on_surface_variant">#BDBDBD</color>
     <color name="splash_background_blue">#2d5d9b</color>
+    <color name="brand_blue">#0077b6</color>
 
 </resources>

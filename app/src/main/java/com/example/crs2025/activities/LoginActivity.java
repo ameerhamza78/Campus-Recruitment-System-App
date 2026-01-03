@@ -3,12 +3,9 @@ package com.example.crs2025.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,9 +20,9 @@ import com.google.firebase.auth.FirebaseUser;
 public class LoginActivity extends AppCompatActivity {
 
     private EditText etEmail, etPassword;
-    private Spinner spinnerRole;
+    private RadioGroup roleSelectorGroup;
     private Button btnLogin;
-    private String selectedRole = "Student"; // Default role
+    private String selectedRole = "Admin"; // Default role
 
     private FirebaseAuth mAuth;
 
@@ -36,24 +33,19 @@ public class LoginActivity extends AppCompatActivity {
 
         etEmail = findViewById(R.id.et_email);
         etPassword = findViewById(R.id.et_password);
-        spinnerRole = findViewById(R.id.spinner_role);
+        roleSelectorGroup = findViewById(R.id.role_selector_group);
         btnLogin = findViewById(R.id.btn_login);
 
         mAuth = FirebaseAuth.getInstance();
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.login_roles, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerRole.setAdapter(adapter);
-
-        spinnerRole.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedRole = parent.getItemAtPosition(position).toString();
+        roleSelectorGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId == R.id.role_admin) {
+                selectedRole = "Admin";
+            } else if (checkedId == R.id.role_student) {
+                selectedRole = "Student";
+            } else if (checkedId == R.id.role_company) {
+                selectedRole = "Company";
             }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
         });
 
         btnLogin.setOnClickListener(v -> loginUser());
@@ -68,14 +60,12 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // Check if the selected role is Admin with static credentials
         if (selectedRole.equals("Admin") && email.equals("admin@admin.com") && password.equals("admin123")) {
             startActivity(new Intent(LoginActivity.this, AdminDashboardActivity.class));
             finish();
             return;
         }
 
-        // Firebase Authentication for Student & Company
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
