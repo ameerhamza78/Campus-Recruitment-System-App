@@ -28,7 +28,7 @@ public class RegisterActivity extends AppCompatActivity {
     private LinearLayout studentFieldsLayout, addressLayout;
     private String selectedRole = "Student"; // Default role
 
-    private DatabaseReference databaseReference;
+    private DatabaseReference usersRef;
     private FirebaseAuth mAuth;
 
     @Override
@@ -51,9 +51,8 @@ public class RegisterActivity extends AppCompatActivity {
         studentFieldsLayout = findViewById(R.id.student_fields_layout);
         addressLayout = findViewById(R.id.address_layout);
 
-
         // Firebase Instances
-        databaseReference = FirebaseDatabase.getInstance().getReference("users");
+        usersRef = FirebaseDatabase.getInstance().getReference("users");
         mAuth = FirebaseAuth.getInstance();
 
         // Set up listener for the new visual role selector
@@ -65,7 +64,6 @@ public class RegisterActivity extends AppCompatActivity {
             }
             toggleFieldsVisibility();
         });
-
 
         // Register button action
         btnRegister.setOnClickListener(v -> registerUser());
@@ -119,9 +117,16 @@ public class RegisterActivity extends AppCompatActivity {
                                     return;
                                 }
 
-                                // For student, we pass a null or empty address.
-                                user = new User(userId, name, email, "", "Student", enrollment, branch, institute, password);
-                                databaseReference.child(userId).setValue(user);
+                                user = new User(userId, name, email, "", "Student", enrollment, branch, institute);
+                                usersRef.child(userId).setValue(user).addOnCompleteListener(task1 -> {
+                                    if(task1.isSuccessful()) {
+                                        Toast.makeText(RegisterActivity.this, "Registration Successful", Toast.LENGTH_SHORT).show();
+                                        startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                                        finish();
+                                    } else {
+                                        Toast.makeText(RegisterActivity.this, "Database error: " + task1.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                    }
+                                });
 
                             } else { // Company
                                 String address = etAddress.getText().toString().trim();
@@ -129,14 +134,17 @@ public class RegisterActivity extends AppCompatActivity {
                                     Toast.makeText(this, "Please fill company address", Toast.LENGTH_SHORT).show();
                                     return;
                                 }
-                                // For company, student-specific fields are null.
-                                user = new User(userId, name, email, address, "Company", null, null, null, password);
-                                databaseReference.child(userId).setValue(user);
+                                user = new User(userId, name, email, address, "Company");
+                                usersRef.child(userId).setValue(user).addOnCompleteListener(task1 -> {
+                                    if(task1.isSuccessful()) {
+                                        Toast.makeText(RegisterActivity.this, "Registration Successful", Toast.LENGTH_SHORT).show();
+                                        startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                                        finish();
+                                    } else {
+                                        Toast.makeText(RegisterActivity.this, "Database error: " + task1.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                    }
+                                });
                             }
-
-                            Toast.makeText(this, "Registration Successful", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
-                            finish();
                         }
                     } else {
                         Log.e("RegisterActivity", "Registration failed", task.getException());

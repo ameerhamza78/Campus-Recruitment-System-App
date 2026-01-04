@@ -11,10 +11,9 @@ public class User {
     private String enrollmentNo;
     private String branch;
     private String institute;
-    private String password;
 
     // Constructor for Student
-    public User(String id, String name, String email, String address, String role, String enrollmentNo, String branch, String institute, String password) {
+    public User(String id, String name, String email, String address, String role, String enrollmentNo, String branch, String institute) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -22,18 +21,16 @@ public class User {
         this.enrollmentNo = enrollmentNo;
         this.branch = branch;
         this.institute = institute;
-        this.password = password;
         this.role = role;
     }
 
     // Constructor for Company
-    public User(String id, String name, String email, String address, String role, String password) {
+    public User(String id, String name, String email, String address, String role) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.address = address;
         this.role = role;
-        this.password = password;
         this.enrollmentNo = "";
         this.branch = "";
         this.institute = "";
@@ -66,8 +63,4 @@ public class User {
 
     public String getInstitute() { return institute; }
     public void setInstitute(String institute) { this.institute = institute; }
-
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
 }
-
