@@ -50,6 +50,7 @@ public class ManageStudentsActivity extends AppCompatActivity implements Student
 
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.brand_blue));
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);

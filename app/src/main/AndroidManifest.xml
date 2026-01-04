@@ -28,12 +28,16 @@
         <!-- MainActivity is no longer the starting screen -->
         <activity
             android:name=".activities.MainActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.CRS2025.SolidStatusBar" />
 
-        <activity android:name=".activities.LoginActivity"/>
-        <activity android:name=".activities.RegisterActivity"/>
+        <activity android:name=".activities.LoginActivity"
+            android:theme="@style/Theme.CRS2025.DarkHeader"/>
+        <activity android:name=".activities.RegisterActivity"
+            android:theme="@style/Theme.CRS2025.DarkHeader"/>
 
-        <activity android:name=".dashboards.AdminDashboardActivity"/>
+        <activity android:name=".dashboards.AdminDashboardActivity"
+            android:theme="@style/Theme.CRS2025.SolidStatusBar"/>
         <activity android:name=".dashboards.StudentDashboardActivity"/>
         <activity android:name=".dashboards.CompanyDashboardActivity"/>
 

@@ -15,4 +15,16 @@
         <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
         <item name="postSplashScreenTheme">@style/Theme.CRS2025</item>
     </style>
+
+    <!-- Theme for activities with a solid primary-colored status bar -->
+    <style name="Theme.CRS2025.SolidStatusBar" parent="Theme.CRS2025">
+        <item name="android:statusBarColor">@color/brand_blue</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+    <!-- Theme for activities with a dark header, requiring light status bar icons -->
+    <style name="Theme.CRS2025.DarkHeader" parent="Theme.CRS2025">
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
 </resources>

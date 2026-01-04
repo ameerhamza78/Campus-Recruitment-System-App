@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             tools:text="Enrollment: 123456789"
-            android:textColor="?attr/colorPrimary"
+            android:textColor="@color/brand_blue"
             android:textSize="14sp"
             android:textStyle="italic" />
 
