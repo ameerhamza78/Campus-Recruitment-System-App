@@ -3,6 +3,13 @@ plugins {
     alias(libs.plugins.google.gms.google.services)
 }
 
+// ** THE FINAL FIX **
+// This block must be at the top level. It tells Gradle to exclude
+// the old, conflicting protobuf-lite library from ALL configurations.
+configurations.all {
+    exclude(group = "com.google.protobuf", module = "protobuf-lite")
+}
+
 android {
     namespace = "com.example.crs2025"
     compileSdk = 35
@@ -37,33 +44,26 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+
+    // Firebase dependencies using the Bill of Materials (BOM)
+    implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.database)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
+    
+    // Splash Screen library
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
+    // Testing libraries
     implementation(libs.espresso.idling.resource)
-    implementation(platform(libs.firebase.bom))
     implementation(libs.ext.junit)
     implementation(libs.espresso.contrib)
-    implementation("androidx.core:core-splashscreen:1.0.1")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(libs.espresso.intents)
     androidTestImplementation(libs.core)
     androidTestImplementation(libs.rules)
-
-    // Enforce Protobuf version
-    implementation("com.google.protobuf:protobuf-javalite:3.25.1")
-
-    // Exclude conflicting protobuf-lite from all Firebase dependencies
-    configurations.all {
-        exclude (group= "com.google.protobuf", module= "protobuf-lite")
-    }
-
-    // Optional: Force all protobuf dependencies to use javalite 3.25.1
-    configurations.all {
-        resolutionStrategy {
-            force ("com.google.protobuf:protobuf-javalite:3.25.1")
-        }
-    }
+    
+    // No longer need any manual protobuf management here.
 }

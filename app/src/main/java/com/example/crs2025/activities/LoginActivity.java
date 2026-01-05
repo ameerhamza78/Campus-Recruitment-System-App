@@ -2,6 +2,7 @@ package com.example.crs2025.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
@@ -28,7 +29,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // ** THE FIX **: Force the status bar to be our brand's blue color
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.brand_blue));
 
         setContentView(R.layout.activity_login);
@@ -67,7 +67,13 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
                         navigateToDashboard();
                     } else {
-                        Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                        // ** THE FIX **: Get the specific error message from Firebase
+                        String errorMessage = "Authentication failed.";
+                        if (task.getException() != null) {
+                            errorMessage += " " + task.getException().getMessage();
+                            Log.e("LoginActivity", "Login Error", task.getException());
+                        }
+                        Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_LONG).show();
                     }
                 });
     }
