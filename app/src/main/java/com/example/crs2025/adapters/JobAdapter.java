@@ -1,10 +1,10 @@
 package com.example.crs2025.adapters;
 
 import android.content.Context;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,40 +16,52 @@ import com.example.crs2025.models.Job;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JobAdapter extends RecyclerView.Adapter<JobAdapter.ViewHolder> {
+public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
 
-    private Context context;
-    private List<Job> jobList;
-    private List<Job> selectedJobs = new ArrayList<>();
+    private final Context context;
+    private final List<Job> jobList;
+    private final OnJobInteractionListener interactionListener;
+    private final SparseBooleanArray selectedItems;
 
-    public JobAdapter(Context context, List<Job> jobList) {
-        this.context = context;
-        this.jobList = jobList;
+    public interface OnJobInteractionListener {
+        void onJobClick(int position);
+        void onJobLongClick(int position);
     }
 
-    public List<Job> getSelectedJobs() {
-        return selectedJobs;
+    public JobAdapter(Context context, List<Job> jobList, OnJobInteractionListener listener) {
+        this.context = context;
+        this.jobList = jobList;
+        this.interactionListener = listener;
+        this.selectedItems = new SparseBooleanArray();
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public JobViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_job, parent, false);
-        return new ViewHolder(view);
+        return new JobViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull JobViewHolder holder, int position) {
         Job job = jobList.get(position);
-        holder.tvJobTitle.setText("Job: " + job.getJobTitle());
-        holder.tvCompanyName.setText("Company: " + job.getCompanyName());
+        holder.tvJobTitle.setText(job.getJobTitle());
+        holder.tvCompanyName.setText("Posted by: " + job.getCompanyName());
+        holder.tvJobLocation.setText("Type: " + job.getJobType());
 
-        holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                selectedJobs.add(job);
-            } else {
-                selectedJobs.remove(job);
+        holder.itemView.setActivated(selectedItems.get(position, false));
+
+        holder.itemView.setOnClickListener(v -> {
+            if (interactionListener != null) {
+                interactionListener.onJobClick(holder.getAdapterPosition());
             }
+        });
+
+        holder.itemView.setOnLongClickListener(v -> {
+            if (interactionListener != null) {
+                interactionListener.onJobLongClick(holder.getAdapterPosition());
+            }
+            return true;
         });
     }
 
@@ -58,20 +70,42 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.ViewHolder> {
         return jobList.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvJobTitle, tvCompanyName;
-        CheckBox checkBox;
-
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            tvJobTitle = itemView.findViewById(R.id.tv_job_title);
-            tvCompanyName = itemView.findViewById(R.id.tv_company_name);
-            checkBox = itemView.findViewById(R.id.checkbox_select);
+    public void toggleSelection(int pos) {
+        if (selectedItems.get(pos, false)) {
+            selectedItems.delete(pos);
+        } else {
+            selectedItems.put(pos, true);
         }
+        notifyItemChanged(pos);
     }
-    public void clearSelection() {
-        selectedJobs.clear();
+
+    public void clearSelections() {
+        selectedItems.clear();
         notifyDataSetChanged();
     }
 
+    public int getSelectedItemCount() {
+        return selectedItems.size();
+    }
+
+    public List<Integer> getSelectedItems() {
+        List<Integer> items = new ArrayList<>(selectedItems.size());
+        for (int i = 0; i < selectedItems.size(); i++) {
+            items.add(selectedItems.keyAt(i));
+        }
+        return items;
+    }
+
+    public static class JobViewHolder extends RecyclerView.ViewHolder {
+        final TextView tvJobTitle;
+        final TextView tvCompanyName;
+        final TextView tvJobLocation;
+
+        public JobViewHolder(@NonNull View itemView) {
+            super(itemView);
+            tvJobTitle = itemView.findViewById(R.id.tv_job_title);
+            tvCompanyName = itemView.findViewById(R.id.tv_company_name);
+            tvJobLocation = itemView.findViewById(R.id.tv_job_location);
+        }
+    }
 }
