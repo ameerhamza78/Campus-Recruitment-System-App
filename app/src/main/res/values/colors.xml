@@ -18,5 +18,9 @@
     <color name="material_on_surface_variant">#BDBDBD</color>
     <color name="splash_background_blue">#2d5d9b</color>
     <color name="brand_blue">#0077b6</color>
-
+    
+    <!-- Status Colors -->
+    <color name="status_accepted">#4CAF50</color> <!-- Green -->
+    <color name="status_rejected">#D32F2F</color> <!-- Red -->
+    <color name="status_pending">#FFA000</color>  <!-- Amber -->
 </resources>

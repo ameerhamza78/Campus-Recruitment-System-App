@@ -1,48 +1,62 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="10dp"
-    android:gravity="center_vertical">
-
-    <CheckBox
-        android:id="@+id/checkbox_select"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    app:cardBackgroundColor="@android:color/white"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="3dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingLeft="10dp">
+        android:padding="16dp">
 
         <TextView
-            android:id="@+id/tv_application_job_title"
+            android:id="@+id/tv_job_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Job Title"
+            android:textColor="@color/brand_blue"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="Software Engineer Intern" />
+
+        <TextView
+            android:id="@+id/tv_company_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="#333333"
             android:textSize="16sp"
-            android:textStyle="bold"/>
+            tools:text="Tech Solutions Inc." />
 
         <TextView
-            android:id="@+id/tv_application_student"
+            android:id="@+id/tv_student_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Student Name"
-            android:textSize="14sp"/>
-
-        <TextView
-            android:id="@+id/tv_application_company"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Company Name"
-            android:textSize="14sp"/>
+            android:layout_marginTop="8dp"
+            android:textColor="#555555"
+            android:textSize="14sp"
+            tools:text="Applied by: John Doe" />
 
         <TextView
             android:id="@+id/tv_application_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Status"
-            android:textSize="14sp"/>
+            android:layout_gravity="end"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/status_background"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            tools:text="Pending" />
+
     </LinearLayout>
-</LinearLayout>
+</androidx.cardview.widget.CardView>
