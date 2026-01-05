@@ -2,41 +2,42 @@ package com.example.crs2025.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.example.crs2025.R;
 import com.example.crs2025.dashboards.AdminDashboardActivity;
 import com.example.crs2025.dashboards.CompanyDashboardActivity;
 import com.example.crs2025.dashboards.StudentDashboardActivity;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
 
     private EditText etEmail, etPassword;
     private RadioGroup roleSelectorGroup;
     private Button btnLogin;
-    private String selectedRole = "Admin"; // Default role
-
     private FirebaseAuth mAuth;
+    private String selectedRole = "Admin"; // Default role
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // ** THE FIX **: Force the status bar to be our brand's blue color
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.brand_blue));
+
         setContentView(R.layout.activity_login);
 
+        mAuth = FirebaseAuth.getInstance();
         etEmail = findViewById(R.id.et_email);
         etPassword = findViewById(R.id.et_password);
         roleSelectorGroup = findViewById(R.id.role_selector_group);
         btnLogin = findViewById(R.id.btn_login);
-
-        mAuth = FirebaseAuth.getInstance();
 
         roleSelectorGroup.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.role_admin) {
@@ -55,35 +56,39 @@ public class LoginActivity extends AppCompatActivity {
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
 
-        if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
-            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (selectedRole.equals("Admin") && email.equals("admin@admin.com") && password.equals("admin123")) {
-            startActivity(new Intent(LoginActivity.this, AdminDashboardActivity.class));
-            finish();
+        if (email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(LoginActivity.this, "Please enter email and password", Toast.LENGTH_SHORT).show();
             return;
         }
 
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        if (user != null) {
-                            switch (selectedRole) {
-                                case "Student":
-                                    startActivity(new Intent(LoginActivity.this, StudentDashboardActivity.class));
-                                    break;
-                                case "Company":
-                                    startActivity(new Intent(LoginActivity.this, CompanyDashboardActivity.class));
-                                    break;
-                            }
-                            finish();
-                        }
+                        Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
+                        navigateToDashboard();
                     } else {
-                        Toast.makeText(this, "Login failed. Please try again.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    private void navigateToDashboard() {
+        Intent intent;
+        switch (selectedRole) {
+            case "Admin":
+                intent = new Intent(LoginActivity.this, AdminDashboardActivity.class);
+                break;
+            case "Student":
+                intent = new Intent(LoginActivity.this, StudentDashboardActivity.class);
+                break;
+            case "Company":
+                intent = new Intent(LoginActivity.this, CompanyDashboardActivity.class);
+                break;
+            default:
+                return; // Should not happen
+        }
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 }

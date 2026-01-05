@@ -12,6 +12,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.example.crs2025.R;
 import com.example.crs2025.models.User;
@@ -28,12 +29,16 @@ public class RegisterActivity extends AppCompatActivity {
     private LinearLayout studentFieldsLayout, addressLayout;
     private String selectedRole = "Student"; // Default role
 
-    private DatabaseReference usersRef;
+    private DatabaseReference databaseReference;
     private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // ** THE FIX **: Force the status bar to be our brand's blue color
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.brand_blue));
+
         setContentView(R.layout.activity_register);
 
         // Initialize Views
@@ -51,8 +56,9 @@ public class RegisterActivity extends AppCompatActivity {
         studentFieldsLayout = findViewById(R.id.student_fields_layout);
         addressLayout = findViewById(R.id.address_layout);
 
+
         // Firebase Instances
-        usersRef = FirebaseDatabase.getInstance().getReference("users");
+        databaseReference = FirebaseDatabase.getInstance().getReference("users");
         mAuth = FirebaseAuth.getInstance();
 
         // Set up listener for the new visual role selector
@@ -64,6 +70,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
             toggleFieldsVisibility();
         });
+
 
         // Register button action
         btnRegister.setOnClickListener(v -> registerUser());
@@ -118,7 +125,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 }
 
                                 user = new User(userId, name, email, "", "Student", enrollment, branch, institute);
-                                usersRef.child(userId).setValue(user).addOnCompleteListener(task1 -> {
+                                databaseReference.child(userId).setValue(user).addOnCompleteListener(task1 -> {
                                     if(task1.isSuccessful()) {
                                         Toast.makeText(RegisterActivity.this, "Registration Successful", Toast.LENGTH_SHORT).show();
                                         startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
@@ -135,7 +142,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     return;
                                 }
                                 user = new User(userId, name, email, address, "Company");
-                                usersRef.child(userId).setValue(user).addOnCompleteListener(task1 -> {
+                                databaseReference.child(userId).setValue(user).addOnCompleteListener(task1 -> {
                                     if(task1.isSuccessful()) {
                                         Toast.makeText(RegisterActivity.this, "Registration Successful", Toast.LENGTH_SHORT).show();
                                         startActivity(new Intent(RegisterActivity.this, LoginActivity.class));

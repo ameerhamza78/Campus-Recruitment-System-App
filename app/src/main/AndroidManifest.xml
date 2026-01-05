@@ -15,39 +15,30 @@
         android:theme="@style/Theme.CRS2025"
         tools:targetApi="31">
 
-        <!-- SplashActivity is now the starting screen -->
+        <!-- Apply the special Splash theme ONLY to the SplashActivity -->
         <activity
             android:name=".activities.SplashActivity"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.App.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <!-- MainActivity is no longer the starting screen -->
-        <activity
-            android:name=".activities.MainActivity"
-            android:exported="false"
-            android:theme="@style/Theme.CRS2025.SolidStatusBar" />
-
-        <activity android:name=".activities.LoginActivity"
-            android:theme="@style/Theme.CRS2025.DarkHeader"/>
-        <activity android:name=".activities.RegisterActivity"
-            android:theme="@style/Theme.CRS2025.DarkHeader"/>
-
-        <activity android:name=".dashboards.AdminDashboardActivity"
-            android:theme="@style/Theme.CRS2025.SolidStatusBar"/>
+        <!-- All other activities will correctly use the main app theme -->
+        <activity android:name=".activities.MainActivity" android:exported="false" />
+        <activity android:name=".activities.LoginActivity"/>
+        <activity android:name=".activities.RegisterActivity"/>
+        <activity android:name=".dashboards.AdminDashboardActivity"/>
         <activity android:name=".dashboards.StudentDashboardActivity"/>
         <activity android:name=".dashboards.CompanyDashboardActivity"/>
-
         <activity android:name=".admin.ManageStudentsActivity"/>
         <activity android:name=".admin.ManageCompaniesActivity"/>
         <activity android:name=".admin.ManageApplicationsActivity"/>
         <activity android:name=".admin.ManageJobsActivity"/>
         <activity android:name=".admin.ManageInterviewsActivity"/>
         <activity android:name=".admin.ManageFeedbacksActivity"/>
-
         <activity android:name=".company.PostJobActivity"/>
         <activity android:name=".company.ReviewApplicationsActivity"/>
         <activity android:name=".company.ApplicationDetailsForCompanyActivity"/>
@@ -55,7 +46,6 @@
         <activity android:name=".company.PreviousInterviewsActivity"/>
         <activity android:name=".company.InterviewDetailsActivity"/>
         <activity android:name=".company.ProvideCompanyFeedbackActivity"/>
-
         <activity android:name=".student.SearchJobActivity"/>
         <activity android:name=".student.ApplyJobActivity"/>
         <activity android:name=".student.TrackApplicationsActivity"/>

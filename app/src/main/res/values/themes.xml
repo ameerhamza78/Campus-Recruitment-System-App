@@ -1,30 +1,16 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.CRS2025" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Primary brand color -->
+
+    <!-- 1. The Main Theme for your entire app -->
+    <style name="Theme.CRS2025" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/brand_blue</item>
-        <!-- Make status bar transparent -->
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowLightStatusBar">true</item>
     </style>
 
-    <style name="Theme.CRS2025" parent="Base.Theme.CRS2025" />
-
-    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">@android:color/white</item>
-        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
-        <item name="postSplashScreenTheme">@style/Theme.CRS2025</item>
-    </style>
-
-    <!-- Theme for activities with a solid primary-colored status bar -->
-    <style name="Theme.CRS2025.SolidStatusBar" parent="Theme.CRS2025">
-        <item name="android:statusBarColor">@color/brand_blue</item>
-        <item name="android:windowLightStatusBar">false</item>
-    </style>
-
-    <!-- Theme for activities with a dark header, requiring light status bar icons -->
-    <style name="Theme.CRS2025.DarkHeader" parent="Theme.CRS2025">
-        <item name="android:windowLightStatusBar">false</item>
+    <!-- 2. The Classic Splash Screen Theme -->
+    <style name="Theme.App.Splash" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- This sets the solid background color that appears instantly -->
+        <item name="android:windowBackground">@color/splash_background_blue</item>
+        <!-- This ensures the status bar matches the background -->
+        <item name="android:statusBarColor">@color/splash_background_blue</item>
     </style>
 
 </resources>

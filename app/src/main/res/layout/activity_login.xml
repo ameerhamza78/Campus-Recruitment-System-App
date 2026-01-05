@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
@@ -12,10 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_alignParentTop="true"
-        android:background="#0077b6"
+        android:background="@color/brand_blue"
         android:rotation="-15"
-        android:translationY="-80dp"
-        android:translationX="-80dp" />
+        android:translationX="-80dp"
+        android:translationY="-80dp" />
 
     <!-- Header -->
     <TextView
@@ -34,9 +33,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/login_title"
         android:layout_marginStart="24dp"
+        android:alpha="0.8"
         android:text="please sign in to continue."
         android:textColor="@android:color/white"
-        android:alpha="0.8"
         android:textSize="16sp" />
 
     <!-- Form Section -->
@@ -50,39 +49,40 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
             android:text="Select your role"
             android:textColor="#333333"
             android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="12dp"/>
+            android:textStyle="bold" />
 
         <!-- VISUAL ROLE SELECTOR -->
         <RadioGroup
             android:id="@+id/role_selector_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal">
 
             <RadioButton
                 android:id="@+id/role_admin"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:layout_weight="1"
                 android:background="@drawable/role_card_background"
                 android:button="@null"
+                android:checked="true"
                 android:gravity="center"
                 android:paddingVertical="16dp"
                 android:text="Admin"
                 android:textColor="@color/role_card_text_color"
-                android:textStyle="bold"
-                android:checked="true"
-                android:layout_marginEnd="8dp"/>
+                android:textStyle="bold" />
 
             <RadioButton
                 android:id="@+id/role_student"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:layout_weight="1"
                 android:background="@drawable/role_card_background"
                 android:button="@null"
@@ -90,8 +90,7 @@
                 android:paddingVertical="16dp"
                 android:text="Student"
                 android:textColor="@color/role_card_text_color"
-                android:textStyle="bold"
-                android:layout_marginEnd="8dp"/>
+                android:textStyle="bold" />
 
             <RadioButton
                 android:id="@+id/role_company"
@@ -107,22 +106,22 @@
                 android:textStyle="bold" />
         </RadioGroup>
 
-        <!-- Email and Password Fields with HIGH CONTRAST hints -->
+        <!-- Email and Password Fields -->
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Email"
             android:textColorHint="#555555"
-            app:boxStrokeColor="#0077b6"
-            app:hintTextColor="#0077b6">
+            app:boxStrokeColor="@color/brand_blue"
+            app:hintTextColor="@color/brand_blue">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#333333"
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+                android:textColor="#333333" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -132,31 +131,32 @@
             android:layout_marginTop="12dp"
             android:hint="Password"
             android:textColorHint="#555555"
-            app:boxStrokeColor="#0077b6"
-            app:hintTextColor="#0077b6"
+            app:boxStrokeColor="@color/brand_blue"
+            app:hintTextColor="@color/brand_blue"
             app:passwordToggleEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#333333"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:textColor="#333333" />
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
-    <!-- Login Button with CORRECT background and BLACK text -->
-    <Button
+    <!-- Login Button with CORRECTED background tint -->
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_margin="24dp"
-        android:background="@drawable/button_primary_background"
         android:padding="14dp"
         android:text="Login"
         android:textColor="@android:color/white"
         android:textSize="18sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        app:backgroundTint="@color/brand_blue"
+        app:cornerRadius="12dp"/>
 
 </RelativeLayout>
