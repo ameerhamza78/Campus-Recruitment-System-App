@@ -1,6 +1,9 @@
 package com.example.crs2025.models;
 
-public class Application {
+import java.io.Serializable;
+
+// ** THE FIX **: Implement the Serializable interface
+public class Application implements Serializable {
     private String applicationId;
     private String studentId;
     private String jobId;

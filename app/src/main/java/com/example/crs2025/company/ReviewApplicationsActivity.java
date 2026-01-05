@@ -2,19 +2,23 @@ package com.example.crs2025.company;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
+import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.crs2025.R;
 import com.example.crs2025.models.Application;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -22,80 +26,149 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ReviewApplicationsActivity extends AppCompatActivity {
 
-    private ListView lvApplications;
-    private TextView tv_no_applications;
-    private Button btn_go_back;
-    private DatabaseReference applicationsRef;
-    private FirebaseAuth mAuth;
+    private RecyclerView recyclerView;
+    private ProgressBar progressBar;
+    private TextView tvNoApplications;
+    private ApplicationAdapter adapter;
     private List<Application> applicationList;
-    private List<String> applicationDisplayList;
-    private ArrayAdapter<String> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review_applications);
 
-        lvApplications = findViewById(R.id.lv_applications);
-        tv_no_applications = findViewById(R.id.tv_no_applications);
-        btn_go_back = findViewById(R.id.btn_go_back);
+        // Set up the toolbar
+        MaterialToolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);
+        }
 
-        mAuth = FirebaseAuth.getInstance();
-        String companyId = mAuth.getCurrentUser().getUid();
-
-        applicationsRef = FirebaseDatabase.getInstance().getReference("applications").child(companyId);
+        // Initialize views
+        recyclerView = findViewById(R.id.recycler_applications);
+        progressBar = findViewById(R.id.progress_bar);
+        tvNoApplications = findViewById(R.id.tv_no_applications);
+        
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         applicationList = new ArrayList<>();
-        applicationDisplayList = new ArrayList<>();
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, applicationDisplayList);
-        lvApplications.setAdapter(adapter);
+        adapter = new ApplicationAdapter(applicationList);
+        recyclerView.setAdapter(adapter);
 
         fetchApplications();
-
-        lvApplications.setOnItemClickListener((parent, view, position, id) -> {
-            Application selectedApplication = applicationList.get(position);
-            Intent intent = new Intent(ReviewApplicationsActivity.this, ApplicationDetailsForCompanyActivity.class);
-            intent.putExtra("applicationId", selectedApplication.getApplicationId());
-            intent.putExtra("companyId", companyId);
-            startActivity(intent);
-        });
-
-        btn_go_back.setOnClickListener(v -> finish());
     }
 
     private void fetchApplications() {
-        applicationsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        progressBar.setVisibility(View.VISIBLE);
+        String companyId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference applicationsRef = FirebaseDatabase.getInstance().getReference("applications").child(companyId);
+
+        applicationsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 applicationList.clear();
-                applicationDisplayList.clear();
                 for (DataSnapshot appSnap : snapshot.getChildren()) {
                     Application application = appSnap.getValue(Application.class);
                     if (application != null) {
                         applicationList.add(application);
-                        applicationDisplayList.add(application.getJobTitle() + " - " + application.getAddress());
                     }
                 }
 
                 if (applicationList.isEmpty()) {
-                    tv_no_applications.setVisibility(View.VISIBLE); // Show "No Applications" message
-                    lvApplications.setVisibility(View.GONE); // Hide the ListView
+                    tvNoApplications.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
                 } else {
-                    tv_no_applications.setVisibility(View.GONE); // Hide "No Applications" message
-                    lvApplications.setVisibility(View.VISIBLE); // Show the ListView
+                    tvNoApplications.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
                 }
-
                 adapter.notifyDataSetChanged();
+                progressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(ReviewApplicationsActivity.this, "Failed to fetch applications", Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(ReviewApplicationsActivity.this, "Failed to load applications.", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    // --- Inner Adapter Class ---
+    private class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.ViewHolder> {
+
+        private final List<Application> localDataSet;
+
+        public ApplicationAdapter(List<Application> dataSet) {
+            localDataSet = dataSet;
+        }
+
+        @NonNull
+        @Override
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_application_company_view, parent, false);
+            return new ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+            Application application = localDataSet.get(position);
+            holder.tvJobTitle.setText(application.getJobTitle());
+            holder.tvStudentName.setText("Applicant: " + application.getFullName());
+            holder.tvStatus.setText(application.getStatus());
+
+            // Set status color
+            switch (application.getStatus().toLowerCase()) {
+                case "accepted":
+                    holder.tvStatus.getBackground().setTint(ContextCompat.getColor(holder.itemView.getContext(), R.color.status_accepted));
+                    break;
+                case "rejected":
+                    holder.tvStatus.getBackground().setTint(ContextCompat.getColor(holder.itemView.getContext(), R.color.status_rejected));
+                    break;
+                default: // Pending
+                    holder.tvStatus.getBackground().setTint(ContextCompat.getColor(holder.itemView.getContext(), R.color.status_pending));
+                    break;
+            }
+
+            holder.itemView.setOnClickListener(v -> {
+                Intent intent = new Intent(ReviewApplicationsActivity.this, ApplicationDetailsForCompanyActivity.class);
+                // **THE FIX**: Pass the entire object, not just the ID
+                intent.putExtra("APPLICATION_DATA", (Serializable) application);
+                startActivity(intent);
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return localDataSet.size();
+        }
+
+        public class ViewHolder extends RecyclerView.ViewHolder {
+            final TextView tvJobTitle;
+            final TextView tvStudentName;
+            final TextView tvStatus;
+
+            public ViewHolder(@NonNull View itemView) {
+                super(itemView);
+                tvJobTitle = itemView.findViewById(R.id.tv_job_title);
+                tvStudentName = itemView.findViewById(R.id.tv_student_name);
+                tvStatus = itemView.findViewById(R.id.tv_application_status);
+            }
+        }
     }
 }

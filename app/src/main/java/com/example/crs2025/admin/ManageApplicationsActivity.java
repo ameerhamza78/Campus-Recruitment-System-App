@@ -74,7 +74,6 @@ public class ManageApplicationsActivity extends AppCompatActivity implements App
         if (actionMode != null) {
             toggleSelection(position);
         }
-        // You could add logic here to view application details on a normal click
     }
 
     @Override
@@ -166,11 +165,20 @@ public class ManageApplicationsActivity extends AppCompatActivity implements App
                 .setPositiveButton("Delete", (dialog, which) -> {
                     for (int position : selectedItemPositions) {
                         Application appToDelete = applicationList.get(position);
-                        applicationsRef.child(appToDelete.getCompanyId()).child(appToDelete.getApplicationId()).removeValue();
+                        deleteApplication(appToDelete);
                     }
                     Toast.makeText(this, selectedItemPositions.size() + " applications deleted.", Toast.LENGTH_SHORT).show();
                 })
                 .setNegativeButton(android.R.string.no, null).show();
+    }
+
+    private void deleteApplication(Application application) {
+        // This logic needs to be robust to delete from all relevant locations
+        // For now, we assume a simple structure. This may need adjustment based on your final DB schema.
+        applicationsRef.child(application.getCompanyId()).child(application.getApplicationId()).removeValue();
+        // Also delete from the student's applications list if it exists
+        FirebaseDatabase.getInstance().getReference("studentApplications").child(application.getStudentId())
+            .child(application.getApplicationId()).removeValue();
     }
 
     private void setupSwipeToDelete() {
@@ -189,9 +197,8 @@ public class ManageApplicationsActivity extends AppCompatActivity implements App
                         .setTitle("Delete Application")
                         .setMessage("Are you sure you want to delete this application?")
                         .setPositiveButton("Delete", (dialog, which) -> {
-                            applicationsRef.child(appToDelete.getCompanyId()).child(appToDelete.getApplicationId()).removeValue()
-                                    .addOnSuccessListener(aVoid -> Toast.makeText(ManageApplicationsActivity.this, "Application deleted.", Toast.LENGTH_SHORT).show())
-                                    .addOnFailureListener(e -> Toast.makeText(ManageApplicationsActivity.this, "Failed to delete application.", Toast.LENGTH_SHORT).show());
+                            deleteApplication(appToDelete);
+                            Toast.makeText(ManageApplicationsActivity.this, "Application deleted.", Toast.LENGTH_SHORT).show();
                         })
                         .setNegativeButton(android.R.string.no, (dialog, which) -> adapter.notifyItemChanged(position))
                         .setCancelable(false)

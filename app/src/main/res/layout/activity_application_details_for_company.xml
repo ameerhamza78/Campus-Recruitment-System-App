@@ -3,121 +3,176 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:background="@color/background_light">
+    android:background="@color/background_light"
+    android:padding="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="monospace"
+            android:gravity="center"
+            android:paddingBottom="16dp"
             android:text="Application Details"
             android:textSize="20sp"
-            android:fontFamily="monospace"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:paddingBottom="16dp"/>
+            android:textStyle="bold" />
 
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="12dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="6dp"
-        app:cardBackgroundColor="@android:color/white"
-        android:padding="24dp">
-
-        <LinearLayout
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_margin="12dp"
+            android:padding="24dp"
+            app:cardBackgroundColor="@android:color/white"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="6dp">
 
-            <!-- Job Title -->
-            <TextView android:text="Job Title" style="@style/TitleStyle"/>
-            <TextView android:id="@+id/tv_job_title" style="@style/ValueStyle"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
 
-            <!-- Student Name -->
-            <TextView android:text="Student Full Name" style="@style/TitleStyle"/>
-            <TextView android:id="@+id/tv_full_name" style="@style/ValueStyle"/>
+                <!-- Job Title -->
+                <TextView
+                    style="@style/TitleStyle"
+                    android:text="Job Title" />
+                <TextView
+                    android:id="@+id/tv_job_title"
+                    style="@style/ValueStyle" />
 
-            <!-- Student Email -->
-            <TextView android:text="Student Email" style="@style/TitleStyle"/>
-            <TextView android:id="@+id/tv_email" style="@style/ValueStyle"/>
+                <!-- Student Name -->
+                <TextView
+                    style="@style/TitleStyle"
+                    android:text="Student Full Name" />
+                <TextView
+                    android:id="@+id/tv_full_name"
+                    style="@style/ValueStyle" />
 
-            <!-- Student Address -->
-            <TextView android:text="Student Address" style="@style/TitleStyle"/>
-            <TextView android:id="@+id/tv_address" style="@style/ValueStyle"/>
+                <!-- Student Email -->
+                <TextView
+                    style="@style/TitleStyle"
+                    android:text="Student Email" />
+                <TextView
+                    android:id="@+id/tv_email"
+                    style="@style/ValueStyle" />
 
-            <!-- Student Branch -->
-            <TextView android:text="Student Branch" style="@style/TitleStyle"/>
-            <TextView android:id="@+id/tv_branch" style="@style/ValueStyle"/>
+                <!-- Student Address -->
+                <TextView
+                    style="@style/TitleStyle"
+                    android:text="Student Address" />
+                <TextView
+                    android:id="@+id/tv_address"
+                    style="@style/ValueStyle" />
 
-            <!-- CGPA -->
-            <TextView android:text="CGPA" style="@style/TitleStyle"/>
-            <TextView android:id="@+id/tv_cgpa" style="@style/ValueStyle"/>
+                <!-- Student Branch -->
+                <TextView
+                    style="@style/TitleStyle"
+                    android:text="Student Branch" />
+                <TextView
+                    android:id="@+id/tv_branch"
+                    style="@style/ValueStyle" />
 
-            <!-- Reason To Apply -->
-            <TextView android:text="Reason To Apply" style="@style/TitleStyle"/>
-            <TextView android:id="@+id/tv_reason" style="@style/ValueStyle"/>
+                <!-- CGPA -->
+                <TextView
+                    style="@style/TitleStyle"
+                    android:text="CGPA" />
+                <TextView
+                    android:id="@+id/tv_cgpa"
+                    style="@style/ValueStyle" />
 
-            <!-- Resume Link -->
-            <TextView android:text="Resume Link" style="@style/TitleStyle"/>
-            <TextView android:id="@+id/tv_resume" style="@style/ValueStyle"/>
+                <!-- Reason To Apply -->
+                <TextView
+                    style="@style/TitleStyle"
+                    android:text="Reason To Apply" />
+                <TextView
+                    android:id="@+id/tv_reason"
+                    style="@style/ValueStyle" />
 
-            <!-- Application Status -->
-            <TextView android:text="Status" style="@style/TitleStyle"/>
-            <TextView android:id="@+id/tv_status" style="@style/ValueStyle"/>
+                <!-- Resume Link -->
+                <TextView
+                    style="@style/TitleStyle"
+                    android:text="Resume Link" />
+                <TextView
+                    android:id="@+id/tv_resume"
+                    style="@style/ValueStyle" />
 
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+                <!-- Application Status -->
+                <TextView
+                    style="@style/TitleStyle"
+                    android:text="Status" />
+                <TextView
+                    android:id="@+id/tv_status"
+                    style="@style/ValueStyle" />
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
         <!-- Approve & Reject Buttons -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginTop="16dp"
             android:gravity="center"
-            android:layout_marginTop="16dp">
+            android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_approve"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Approve"
-                android:fontFamily="monospace"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:backgroundTint="#29bf12"
-                app:cornerRadius="12dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="10dp"/>
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:backgroundTint="#29bf12"
+                android:fontFamily="monospace"
+                android:text="Approve"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:cornerRadius="12dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_reject"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Reject"
-                android:textSize="20sp"
-                android:fontFamily="monospace"
-                android:textStyle="bold"
-                android:backgroundTint="@color/red"
-                app:cornerRadius="12dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="16dp"/>
+                android:layout_marginEnd="16dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/red"
+                android:fontFamily="monospace"
+                android:text="Reject"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:cornerRadius="12dp" />
         </LinearLayout>
+
+        <!-- SCHEDULE INTERVIEW BUTTON (NEW) -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_schedule_interview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="16dp"
+            android:padding="12dp"
+            android:text="Schedule Interview"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:backgroundTint="@color/brand_blue"
+            app:cornerRadius="12dp" />
 
         <!-- Go Back Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_go_back"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="Go Back"
-            style="@style/GoBack"
-            app:cornerRadius="12dp"/>
+            app:cornerRadius="12dp" />
+
     </LinearLayout>
 </ScrollView>

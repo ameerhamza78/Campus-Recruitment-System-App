@@ -1,76 +1,56 @@
-<ScrollView
-xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:padding="16dp"
-android:fillViewport="true">
-
-<LinearLayout
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:gravity="center_horizontal">
+    android:layout_height="match_parent"
+    android:background="#F5F5F5"
+    tools:context=".company.ReviewApplicationsActivity">
 
-    <com.google.android.material.textview.MaterialTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Review Applications"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:fontFamily="monospace"
-        android:paddingBottom="20dp"/>
-
-    <com.google.android.material.card.MaterialCardView
+    <!-- Header Toolbar -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="4dp">
+        android:layout_height="wrap_content">
 
-        <LinearLayout
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/brand_blue"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:title="Review Applications"
+            app:titleTextColor="@android:color/white" />
 
-            <!-- Message when no interviews are available -->
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_no_applications"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="No Applications are available currently."
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:visibility="gone"
-                android:textColor="?attr/colorOnSurface"
-                android:padding="20dp"
-                app:cornerRadius="8dp"
-                android:elevation="2dp"/>
+    </com.google.android.material.appbar.AppBarLayout>
 
-            <!-- ListView -->
-            <ListView
-                android:id="@+id/lv_applications"
-                android:layout_width="match_parent"
-                android:layout_height="550dp"
-                android:divider="@color/material_on_surface_variant"
-                android:dividerHeight="2dp"
-                android:background="?attr/colorSurface"
-                android:elevation="2dp"
-                android:padding="8dp"
-                android:scrollbars="none"/>
+    <!-- List of Applications -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_applications"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/app_bar_layout"
+        android:clipToPadding="false"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        tools:listitem="@layout/item_application_company_view" />
 
-        </LinearLayout>
-
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_go_back"
+    <!-- Empty State Text -->
+    <TextView
+        android:id="@+id/tv_no_applications"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Go Back"
-        android:layout_marginTop="16dp"
-        app:cornerRadius="12sp"
-        style="@style/GoBack"/>
-</LinearLayout>
-</ScrollView>
+        android:layout_centerInParent="true"
+        android:text="No applications received yet."
+        android:textSize="18sp"
+        android:visibility="gone" />
+
+    <!-- Loading Indicator -->
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+</RelativeLayout>
