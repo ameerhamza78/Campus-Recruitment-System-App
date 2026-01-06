@@ -50,7 +50,6 @@ public class ManageStudentsActivity extends AppCompatActivity implements Student
 
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.brand_blue));
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);
@@ -67,10 +66,9 @@ public class ManageStudentsActivity extends AppCompatActivity implements Student
         usersRef = FirebaseDatabase.getInstance().getReference("users");
 
         fetchStudents();
-        setupSwipeToDelete(); // Attach swipe helper
+        setupSwipeToDelete();
     }
 
-    // --- Interaction Listeners for Adapter ---
     @Override
     public void onStudentClick(int position) {
         if (actionMode != null) {
@@ -86,7 +84,6 @@ public class ManageStudentsActivity extends AppCompatActivity implements Student
         toggleSelection(position);
     }
 
-    // --- Data Fetching ---
     private void fetchStudents() {
         progressBar.setVisibility(View.VISIBLE);
         usersRef.orderByChild("role").equalTo("Student").addValueEventListener(new ValueEventListener() {
@@ -111,7 +108,6 @@ public class ManageStudentsActivity extends AppCompatActivity implements Student
         });
     }
 
-    // --- Multi-Select Action Mode ---
     private void toggleSelection(int position) {
         adapter.toggleSelection(position);
         int count = adapter.getSelectedItemCount();
@@ -159,7 +155,6 @@ public class ManageStudentsActivity extends AppCompatActivity implements Student
 
     private void deleteSelectedStudents() {
         List<Integer> selectedItemPositions = adapter.getSelectedItems();
-        // Sort positions in descending order to avoid index issues when removing items
         Collections.sort(selectedItemPositions, Collections.reverseOrder());
 
         new AlertDialog.Builder(this)
@@ -167,22 +162,21 @@ public class ManageStudentsActivity extends AppCompatActivity implements Student
                 .setMessage("Are you sure you want to delete " + selectedItemPositions.size() + " students?")
                 .setPositiveButton("Delete", (dialog, which) -> {
                     for (int position : selectedItemPositions) {
-                        // Get user before removing from list
                         User studentToDelete = studentList.get(position);
-                        usersRef.child(studentToDelete.getId()).removeValue();
+                        // ** THE FIX **: Use the correct getUserId() method
+                        usersRef.child(studentToDelete.getUserId()).removeValue();
                     }
                     Toast.makeText(this, selectedItemPositions.size() + " students deleted.", Toast.LENGTH_SHORT).show();
-                    // The ValueEventListener will automatically refresh the list
                 })
                 .setNegativeButton(android.R.string.no, null).show();
     }
-    
-    // --- Swipe-to-Delete Functionality ---
+
+
     private void setupSwipeToDelete() {
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                return false; // Not needed for swipe
+                return false;
             }
 
             @Override
@@ -194,11 +188,12 @@ public class ManageStudentsActivity extends AppCompatActivity implements Student
                         .setTitle("Delete Student")
                         .setMessage("Are you sure you want to delete " + studentToDelete.getName() + "?")
                         .setPositiveButton("Delete", (dialog, which) -> {
-                            usersRef.child(studentToDelete.getId()).removeValue()
+                             // ** THE FIX **: Use the correct getUserId() method
+                            usersRef.child(studentToDelete.getUserId()).removeValue()
                                     .addOnSuccessListener(aVoid -> Toast.makeText(ManageStudentsActivity.this, "Student deleted.", Toast.LENGTH_SHORT).show())
                                     .addOnFailureListener(e -> Toast.makeText(ManageStudentsActivity.this, "Failed to delete student.", Toast.LENGTH_SHORT).show());
                         })
-                        .setNegativeButton(android.R.string.no, (dialog, which) -> adapter.notifyItemChanged(position)) // Revert swipe
+                        .setNegativeButton(android.R.string.no, (dialog, which) -> adapter.notifyItemChanged(position))
                         .setCancelable(false)
                         .show();
             }
@@ -229,7 +224,6 @@ public class ManageStudentsActivity extends AppCompatActivity implements Student
         }).attachToRecyclerView(recyclerViewStudents);
     }
 
-    // --- Toolbar Menu --- 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {

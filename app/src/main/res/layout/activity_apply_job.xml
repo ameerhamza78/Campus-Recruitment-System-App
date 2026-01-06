@@ -1,201 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:padding="16dp"
-    tools:context=".student.ApplyJobActivity"
-    android:background="@color/background_light"
-    android:id="@+id/apply_job_layout">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5"
+    tools:context=".student.ApplyJobActivity">
 
-    <LinearLayout
+    <!-- Header Toolbar -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Job Form"
-        android:textSize="20sp"
-        android:fontFamily="monospace"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:paddingBottom="16dp"/>
-    <LinearLayout
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/brand_blue"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:title="Apply for Job"
+            app:titleTextColor="@android:color/white" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp"
-        android:background="@drawable/rounded_card"
-        android:elevation="4dp"
-        android:layout_gravity="start">
+        android:layout_height="match_parent"
+        android:layout_below="@id/app_bar_layout">
 
-        <!-- Job Title Spinner -->
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Select Job Title"
-            android:textStyle="bold"/>
-        <Spinner
-            android:id="@+id/sp_job_title"
-            android:layout_width="match_parent"
-            android:layout_height="48sp" />
+            android:orientation="vertical"
+            android:padding="16dp">
 
-        <!-- Company Spinner -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Select Company"
-            android:textStyle="bold"
-            android:paddingTop="8dp"/>
-        <Spinner
-            android:id="@+id/sp_company"
-            android:layout_width="match_parent"
-            android:layout_height="48sp" />
-
-        <TextView
-            android:text="Required Skills:"
-            android:layout_width="match_parent"
-            android:layout_height="34sp"
-            android:paddingTop="10dp"
-            android:textSize="16sp"/>
-
-        <TextView
-            android:id="@+id/tv_skills"
-            android:layout_width="match_parent"
-            android:layout_height="48sp"
-            android:textSize="14sp"/>
-
-        <!-- Full Name -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:endIconMode="clear_text"
-            android:paddingBottom="8sp">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_full_name"
+            <!-- Job Details Card -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Full Name"
-                android:inputType="textPersonName"/>
-        </com.google.android.material.textfield.TextInputLayout>
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="@android:color/white"
+                android:layout_marginBottom="16dp">
 
-        <!-- Email -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:endIconMode="clear_text"
-            android:paddingBottom="8sp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_email"
+                    <TextView
+                        android:id="@+id/tv_job_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/brand_blue"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        tools:text="Software Development Intern" />
+
+                    <TextView
+                        android:id="@+id/tv_company_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:textColor="#333333"
+                        android:textSize="18sp"
+                        tools:text="Innovate Corp" />
+
+                    <TextView
+                        android:id="@+id/tv_skills"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:textColor="#555555"
+                        tools:text="Skills: Java, Kotlin, Android Studio"
+                        app:drawableStartCompat="@drawable/ic_skills" />
+
+                    <TextView
+                        android:id="@+id/tv_cgpa"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:textColor="#555555"
+                        tools:text="Min CGPA: 7.5"
+                        app:drawableStartCompat="@drawable/ic_cgpa" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Application Form -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Your Application"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#333333"
+                android:layout_marginBottom="12dp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                android:hint="Email"/>
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_marginBottom="12dp"
+                android:hint="Why are you a good fit for this role?">
 
-        <!-- Address -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:endIconMode="clear_text"
-            android:paddingBottom="8sp">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_reason_to_apply"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
+                    android:minLines="4" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_address"
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Address"/>
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_marginBottom="24dp"
+                app:startIconDrawable="@drawable/ic_link"
+                android:hint="Link to your Resume/Portfolio">
 
-        <!-- Branch -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:endIconMode="clear_text"
-            android:paddingBottom="8sp">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_resume_link"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textUri" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_branch"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_submit_application"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Branch"/>
-        </com.google.android.material.textfield.TextInputLayout>
+                android:padding="14dp"
+                android:text="Submit Application"
+                android:textSize="18sp"
+                app:cornerRadius="12dp"
+                app:backgroundTint="@color/brand_blue" />
 
-        <!-- CGPA -->
-        <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:endIconMode="clear_text"
-        android:paddingBottom="8sp">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_cgpa"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="CGPA"
-            android:inputType="numberDecimal"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Reason to Apply -->
-        <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:endIconMode="clear_text"
-        android:paddingBottom="8sp">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_reason"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Reason to Apply"
-            android:inputType="textMultiLine"
-            android:minLines="3"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Resume Link -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:endIconMode="clear_text"
-            android:paddingBottom="8sp">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_resume"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Resume Link"
-                android:inputType="textUri"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-    </LinearLayout>
-
-        <!-- Apply Button -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_apply"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Apply"
-            android:layout_marginTop="12dp"
-            app:cornerRadius="16dp"
-            android:layout_gravity="center"
-            android:backgroundTint="#00A8E8"
-            android:fontFamily="monospace"
-            android:textSize="18sp"
-            android:textStyle="bold"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_go_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Go Back"
-            style="@style/GoBack"
-            app:cornerRadius="12dp"/>
-
-    </LinearLayout>
-</ScrollView>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

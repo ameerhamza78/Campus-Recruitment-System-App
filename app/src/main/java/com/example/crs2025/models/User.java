@@ -1,47 +1,47 @@
 package com.example.crs2025.models;
 
 public class User {
-    private String id;
-    private String name;         // Full Name (Student) / Company Name (Company)
+    private String userId;
+    private String name;
     private String email;
-    private String address;      // Address (For both)
-    private String role;         // "Student" or "Company"
-
-    // Additional fields for Students
+    private String address;
+    private String role;
     private String enrollmentNo;
     private String branch;
     private String institute;
+    private String skills;
+    private String cgpa;
+
+    public User() {
+        // Default constructor required for Firebase
+    }
 
     // Constructor for Student
-    public User(String id, String name, String email, String address, String role, String enrollmentNo, String branch, String institute) {
-        this.id = id;
+    public User(String userId, String name, String email, String address, String role, String enrollmentNo, String branch, String institute, String skills, String cgpa) {
+        this.userId = userId;
         this.name = name;
         this.email = email;
         this.address = address;
+        this.role = role;
         this.enrollmentNo = enrollmentNo;
         this.branch = branch;
         this.institute = institute;
-        this.role = role;
+        this.skills = skills;
+        this.cgpa = cgpa;
     }
 
     // Constructor for Company
-    public User(String id, String name, String email, String address, String role) {
-        this.id = id;
+    public User(String userId, String name, String email, String address, String role) {
+        this.userId = userId;
         this.name = name;
         this.email = email;
         this.address = address;
         this.role = role;
-        this.enrollmentNo = "";
-        this.branch = "";
-        this.institute = "";
     }
 
-    // Default constructor (needed for Firebase)
-    public User() {}
-
     // Getters and Setters
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    public String getUserId() { return userId; }
+    public void setUserId(String userId) { this.userId = userId; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
@@ -63,4 +63,10 @@ public class User {
 
     public String getInstitute() { return institute; }
     public void setInstitute(String institute) { this.institute = institute; }
+
+    public String getSkills() { return skills; }
+    public void setSkills(String skills) { this.skills = skills; }
+
+    public String getCgpa() { return cgpa; }
+    public void setCgpa(String cgpa) { this.cgpa = cgpa; }
 }

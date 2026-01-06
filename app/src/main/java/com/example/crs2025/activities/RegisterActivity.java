@@ -18,16 +18,17 @@ import com.example.crs2025.R;
 import com.example.crs2025.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private EditText etName, etEmail, etAddress, etEnrollment, etBranch, etInstitute, etPassword, etConfirmPassword;
+    private EditText etName, etEmail, etAddress, etEnrollment, etBranch, etInstitute, etPassword, etConfirmPassword, etSkills, etCgpa;
     private RadioGroup roleSelectorGroup;
     private Button btnRegister;
     private LinearLayout studentFieldsLayout, addressLayout;
-    private String selectedRole = "Student"; // Default role
+    private String selectedRole = "Student";
 
     private DatabaseReference databaseReference;
     private FirebaseAuth mAuth;
@@ -35,13 +36,24 @@ public class RegisterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // ** THE FIX **: Force the status bar to be our brand's blue color
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.brand_blue));
-
         setContentView(R.layout.activity_register);
 
-        // Initialize Views
+        initializeViews();
+
+        databaseReference = FirebaseDatabase.getInstance().getReference("users");
+        mAuth = FirebaseAuth.getInstance();
+
+        roleSelectorGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            selectedRole = (checkedId == R.id.role_student) ? "Student" : "Company";
+            toggleFieldsVisibility();
+        });
+
+        btnRegister.setOnClickListener(v -> registerUser());
+        toggleFieldsVisibility();
+    }
+
+    private void initializeViews() {
         etName = findViewById(R.id.et_name);
         etEmail = findViewById(R.id.et_email);
         etAddress = findViewById(R.id.et_address);
@@ -50,43 +62,17 @@ public class RegisterActivity extends AppCompatActivity {
         etInstitute = findViewById(R.id.et_institute);
         etPassword = findViewById(R.id.et_password);
         etConfirmPassword = findViewById(R.id.et_confirm_password);
+        etSkills = findViewById(R.id.et_skills);
+        etCgpa = findViewById(R.id.et_cgpa);
         btnRegister = findViewById(R.id.btn_register);
-
         roleSelectorGroup = findViewById(R.id.role_selector_group);
         studentFieldsLayout = findViewById(R.id.student_fields_layout);
         addressLayout = findViewById(R.id.address_layout);
-
-
-        // Firebase Instances
-        databaseReference = FirebaseDatabase.getInstance().getReference("users");
-        mAuth = FirebaseAuth.getInstance();
-
-        // Set up listener for the new visual role selector
-        roleSelectorGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            if (checkedId == R.id.role_student) {
-                selectedRole = "Student";
-            } else if (checkedId == R.id.role_company) {
-                selectedRole = "Company";
-            }
-            toggleFieldsVisibility();
-        });
-
-
-        // Register button action
-        btnRegister.setOnClickListener(v -> registerUser());
-
-        // Set initial visibility
-        toggleFieldsVisibility();
     }
 
     private void toggleFieldsVisibility() {
-        if (selectedRole.equals("Student")) {
-            studentFieldsLayout.setVisibility(View.VISIBLE);
-            addressLayout.setVisibility(View.GONE);
-        } else { // Company
-            studentFieldsLayout.setVisibility(View.GONE);
-            addressLayout.setVisibility(View.VISIBLE);
-        }
+        studentFieldsLayout.setVisibility("Student".equals(selectedRole) ? View.VISIBLE : View.GONE);
+        addressLayout.setVisibility("Company".equals(selectedRole) ? View.VISIBLE : View.GONE);
     }
 
     private void registerUser() {
@@ -95,68 +81,72 @@ public class RegisterActivity extends AppCompatActivity {
         String password = etPassword.getText().toString().trim();
         String confirmPassword = etConfirmPassword.getText().toString().trim();
 
-        // Basic validation for common fields
-        if (TextUtils.isEmpty(name) || TextUtils.isEmpty(email) || TextUtils.isEmpty(password) || TextUtils.isEmpty(confirmPassword)) {
-            Toast.makeText(this, "Please fill all required fields", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (!password.equals(confirmPassword)) {
-            Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(name) || TextUtils.isEmpty(email) || TextUtils.isEmpty(password) || !password.equals(confirmPassword)) {
+            Toast.makeText(this, "Please check all fields and ensure passwords match.", Toast.LENGTH_SHORT).show();
             return;
         }
 
         mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                        if (firebaseUser != null) {
-                            String userId = firebaseUser.getUid();
-                            User user;
-
-                            if (selectedRole.equals("Student")) {
-                                String enrollment = etEnrollment.getText().toString().trim();
-                                String branch = etBranch.getText().toString().trim();
-                                String institute = etInstitute.getText().toString().trim();
-
-                                if (TextUtils.isEmpty(enrollment) || TextUtils.isEmpty(branch) || TextUtils.isEmpty(institute)) {
-                                    Toast.makeText(this, "Please fill all student fields", Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-
-                                user = new User(userId, name, email, "", "Student", enrollment, branch, institute);
-                                databaseReference.child(userId).setValue(user).addOnCompleteListener(task1 -> {
-                                    if(task1.isSuccessful()) {
-                                        Toast.makeText(RegisterActivity.this, "Registration Successful", Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
-                                        finish();
-                                    } else {
-                                        Toast.makeText(RegisterActivity.this, "Database error: " + task1.getException().getMessage(), Toast.LENGTH_LONG).show();
-                                    }
-                                });
-
-                            } else { // Company
-                                String address = etAddress.getText().toString().trim();
-                                if (TextUtils.isEmpty(address)) {
-                                    Toast.makeText(this, "Please fill company address", Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-                                user = new User(userId, name, email, address, "Company");
-                                databaseReference.child(userId).setValue(user).addOnCompleteListener(task1 -> {
-                                    if(task1.isSuccessful()) {
-                                        Toast.makeText(RegisterActivity.this, "Registration Successful", Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
-                                        finish();
-                                    } else {
-                                        Toast.makeText(RegisterActivity.this, "Database error: " + task1.getException().getMessage(), Toast.LENGTH_LONG).show();
-                                    }
-                                });
+            .addOnCompleteListener(this, task -> {
+                if (task.isSuccessful()) {
+                    FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                    if (firebaseUser != null) {
+                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(name).build();
+                        firebaseUser.updateProfile(profileUpdates).addOnCompleteListener(profileTask -> {
+                            if (!profileTask.isSuccessful()) {
+                                Log.w("RegisterActivity", "User profile update failed.", profileTask.getException());
                             }
-                        }
-                    } else {
-                        Log.e("RegisterActivity", "Registration failed", task.getException());
-                        Toast.makeText(this, "Registration failed. " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                            saveUserToDatabase(firebaseUser, name, email);
+                        });
                     }
-                });
+                } else {
+                    Log.e("RegisterActivity", "Registration failed", task.getException());
+                    Toast.makeText(this, "Registration failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+    }
+
+    private void saveUserToDatabase(FirebaseUser firebaseUser, String name, String email) {
+        String userId = firebaseUser.getUid();
+
+        if ("Student".equals(selectedRole)) {
+            String enrollment = etEnrollment.getText().toString().trim();
+            String branch = etBranch.getText().toString().trim();
+            String institute = etInstitute.getText().toString().trim();
+            String skills = etSkills.getText().toString().trim();
+            String cgpa = etCgpa.getText().toString().trim();
+
+            if (TextUtils.isEmpty(enrollment) || TextUtils.isEmpty(branch) || TextUtils.isEmpty(institute) || TextUtils.isEmpty(skills) || TextUtils.isEmpty(cgpa)) {
+                Toast.makeText(this, "Please fill all student fields, including Skills and CGPA", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            User user = new User(userId, name, email, "", "Student", enrollment, branch, institute, skills, cgpa);
+            databaseReference.child(userId).setValue(user).addOnCompleteListener(dbTask -> handleDbWrite(dbTask.isSuccessful(), dbTask.getException()));
+        } else { // Company
+            String address = etAddress.getText().toString().trim();
+            if (TextUtils.isEmpty(address)) {
+                Toast.makeText(this, "Please fill company address", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            User user = new User(userId, name, email, address, "Company");
+            databaseReference.child(userId).setValue(user).addOnCompleteListener(dbTask -> handleDbWrite(dbTask.isSuccessful(), dbTask.getException()));
+        }
+    }
+
+    private void handleDbWrite(boolean isSuccess, Exception e) {
+        if (isSuccess) {
+            registrationSuccess();
+        } else {
+            Toast.makeText(RegisterActivity.this, "Database error: " + (e != null ? e.getMessage() : "Unknown error"), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void registrationSuccess() {
+        Toast.makeText(RegisterActivity.this, "Registration Successful", Toast.LENGTH_SHORT).show();
+        mAuth.signOut();
+        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 }

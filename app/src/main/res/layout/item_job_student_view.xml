@@ -11,44 +11,38 @@
     app:cardCornerRadius="12dp"
     app:cardElevation="3dp">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:padding="16dp">
 
         <TextView
-            android:id="@+id/tv_feedback_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_toStartOf="@id/tv_feedback_role"
-            android:textColor="#333333"
-            android:textSize="16sp"
-            tools:text="This was a great recruitment process. The company was very professional and the instructions were clear." />
-
-        <TextView
-            android:id="@+id/tv_feedback_author"
+            android:id="@+id/tv_job_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_feedback_text"
+            android:textColor="@color/brand_blue"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="Software Development Intern" />
+
+        <TextView
+            android:id="@+id/tv_company_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="#333333"
+            android:textSize="16sp"
+            tools:text="Innovate Corp" />
+
+        <TextView
+            android:id="@+id/tv_job_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:textColor="#555555"
             android:textSize="14sp"
-            android:textStyle="italic"
-            tools:text="From: Test Student" />
-
-        <TextView
-            android:id="@+id/tv_feedback_role"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/role_background"
-            android:paddingHorizontal="8dp"
-            android:paddingVertical="4dp"
-            android:textColor="@android:color/white"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            tools:text="STUDENT" />
-
-    </RelativeLayout>
+            tools:text="Location: Remote" />
+            
+    </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -6,19 +6,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.crs2025.R;
 import com.example.crs2025.models.Job;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
 
-    private final Context context;
     private final List<Job> jobList;
     private final OnJobInteractionListener interactionListener;
     private final SparseBooleanArray selectedItems;
@@ -29,7 +25,6 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
     }
 
     public JobAdapter(Context context, List<Job> jobList, OnJobInteractionListener listener) {
-        this.context = context;
         this.jobList = jobList;
         this.interactionListener = listener;
         this.selectedItems = new SparseBooleanArray();
@@ -38,7 +33,7 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
     @NonNull
     @Override
     public JobViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_job, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_job, parent, false);
         return new JobViewHolder(view);
     }
 
@@ -47,7 +42,7 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
         Job job = jobList.get(position);
         holder.tvJobTitle.setText(job.getJobTitle());
         holder.tvCompanyName.setText("Posted by: " + job.getCompanyName());
-        holder.tvJobLocation.setText("Type: " + job.getJobType());
+        holder.tvJobLocation.setText("Location: " + job.getLocation());
 
         holder.itemView.setActivated(selectedItems.get(position, false));
 

@@ -1,68 +1,208 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="20dp"
-    android:gravity="center"
-    android:id="@+id/student_dashboard_layout">
+    android:background="#F5F5F5"
+    tools:context=".dashboards.StudentDashboardActivity">
 
-    <TextView
-        android:id="@+id/tvWelcome"
-        android:layout_width="wrap_content"
+    <!-- Header -->
+    <LinearLayout
+        android:id="@+id/header_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Welcome Student"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:fontFamily="monospace"
-        android:textColor="@android:color/black"
-        android:layout_marginBottom="30dp"/>
+        android:background="@color/brand_blue"
+        android:elevation="4dp"
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <Button
-        android:id="@+id/btnSearchJob"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:text="Search Job"
-        android:backgroundTint="#38b000"
-        style="@style/DashboardButtonStyle"/>
+        <TextView
+            android:id="@+id/tv_welcome_student"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Student Dashboard"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
-    <Button
-        android:id="@+id/btnApplyJob"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:text="Apply for Jobs"
-        android:backgroundTint="#38b000"
-        style="@style/DashboardButtonStyle"/>
+    <!-- Grid of options in a ScrollView -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/logout_button_container"
+        android:layout_below="@id/header_layout">
 
-    <Button
-        android:id="@+id/btnTrackStatus"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:text="Track Application Status"
-        android:backgroundTint="#38b000"
-        style="@style/DashboardButtonStyle"/>
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:alignmentMode="alignMargins"
+            android:columnCount="2"
+            android:padding="12dp">
 
-    <Button
-        android:id="@+id/btnTrackInterview"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:text="Track Interview Status"
-        android:backgroundTint="#38b000"
-        style="@style/DashboardButtonStyle"/>
+            <!-- Card for Search Jobs -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_search_jobs"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="8dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
 
-    <Button
-        android:id="@+id/btnStudentFeedback"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:text="Provide Feedback"
-        android:backgroundTint="#38b000"
-        style="@style/DashboardButtonStyle"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-    <Button
-        android:id="@+id/btnLogout"
-        android:layout_width="300dp"
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:src="@drawable/ic_manage_jobs"
+                        app:tint="@color/brand_blue" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Search Jobs"
+                        android:textAlignment="center"
+                        android:textColor="#333333"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Card for Track Applications -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_track_applications"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="8dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:src="@drawable/ic_manage_applications"
+                        app:tint="@color/brand_blue" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Track Applications"
+                        android:textAlignment="center"
+                        android:textColor="#333333"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Card for Track Interviews -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_track_interviews"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="8dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:src="@drawable/ic_manage_interviews"
+                        app:tint="@color/brand_blue" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Track Interviews"
+                        android:textAlignment="center"
+                        android:textColor="#333333"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Card for Provide Feedback -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_provide_feedback"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="8dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:src="@drawable/ic_manage_feedbacks"
+                        app:tint="@color/brand_blue" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Provide Feedback"
+                        android:textAlignment="center"
+                        android:textColor="#333333"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+        </GridLayout>
+    </ScrollView>
+
+    <!-- Logout Button Container -->
+    <LinearLayout
+        android:id="@+id/logout_button_container"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Logout"
-        android:backgroundTint="#da2c38"
-        style="@style/DashboardButtonStyle"/>
-</LinearLayout>
+        android:layout_alignParentBottom="true"
+        android:padding="16dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_logout"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:text="Logout"
+            android:textColor="@android:color/white"
+            app:backgroundTint="@color/red"
+            app:cornerRadius="12dp" />
+
+    </LinearLayout>
+
+</RelativeLayout>

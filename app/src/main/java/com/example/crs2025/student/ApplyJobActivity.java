@@ -1,372 +1,195 @@
-//package com.example.crs2025.student;
-//
-//import android.os.Bundle;
-//import android.view.View;
-//import android.widget.*;
-//
-//import androidx.annotation.NonNull;
-//import androidx.appcompat.app.AppCompatActivity;
-//
-//import com.example.crs2025.R;
-//import com.example.crs2025.models.Application;
-//import com.google.firebase.auth.FirebaseAuth;
-//import com.google.firebase.auth.FirebaseUser;
-//import com.google.firebase.database.*;
-//
-//import java.util.ArrayList;
-//import java.util.HashMap;
-//import java.util.List;
-//import java.util.Map;
-//
-//public class ApplyJobActivity extends AppCompatActivity {
-//
-//    private Spinner spJobTitle, spCompany;
-//    private TextView tvSkills;
-//    private EditText etFullName, etEmail, etAddress, etBranch, etCgpa, etReason, etResume;
-//    private Button btnApply, btnGoBack;
-//    private DatabaseReference jobsRef, applicationsRef, globalAppsRef;
-//    private FirebaseAuth mAuth;
-//    private String selectedJobTitle, selectedCompanyId, selectedCompanyName, selectedSkills, selectedJobCgpa;
-//    private Map<String, String> companyMap = new HashMap<>();
-//
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_apply_job);
-//
-//        // Initialize views
-//        spJobTitle = findViewById(R.id.sp_job_title);
-//        spCompany = findViewById(R.id.sp_company);
-//        tvSkills = findViewById(R.id.tv_skills);
-//        etFullName = findViewById(R.id.et_full_name);
-//        etEmail = findViewById(R.id.et_email);
-//        etAddress = findViewById(R.id.et_address);
-//        etBranch = findViewById(R.id.et_branch);
-//        etCgpa = findViewById(R.id.et_cgpa);
-//        etReason = findViewById(R.id.et_reason);
-//        etResume = findViewById(R.id.et_resume);
-//        btnApply = findViewById(R.id.btn_apply);
-//        btnGoBack = findViewById(R.id.btn_go_back);
-//
-//        // Initialize Firebase
-//        mAuth = FirebaseAuth.getInstance();
-//        jobsRef = FirebaseDatabase.getInstance().getReference("globalJobs");
-//        applicationsRef = FirebaseDatabase.getInstance().getReference("applications");
-//        globalAppsRef = FirebaseDatabase.getInstance().getReference("globalApplications");
-//
-//        // Load job titles dynamically
-//        loadJobTitles();
-//
-//        // Handle job selection to load companies dynamically
-//        spJobTitle.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                selectedJobTitle = parent.getItemAtPosition(position).toString();
-//                loadCompaniesForJob(selectedJobTitle);
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> parent) {}
-//        });
-//
-//        // Handle company selection to display job details
-//        spCompany.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                selectedCompanyName = parent.getItemAtPosition(position).toString();
-//                selectedCompanyId = companyMap.get(selectedCompanyName);
-//                fetchJobDetails(selectedCompanyId, selectedJobTitle);
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> parent) {}
-//        });
-//
-//        // Apply Job Button Click
-//        btnApply.setOnClickListener(v -> applyForJob());
-//        btnGoBack.setOnClickListener(v -> finish());
-//    }
-//
-//    private void loadJobTitles() {
-//        jobsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                List<String> jobTitles = new ArrayList<>();
-//                for (DataSnapshot jobSnap : snapshot.getChildren()) {
-//                    String jobTitle = jobSnap.child("jobTitle").getValue(String.class);
-//                    if (jobTitle != null && !jobTitles.contains(jobTitle)) {
-//                        jobTitles.add(jobTitle);
-//                    }
-//                }
-//                ArrayAdapter<String> adapter = new ArrayAdapter<>(ApplyJobActivity.this, android.R.layout.simple_spinner_item, jobTitles);
-//                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                spJobTitle.setAdapter(adapter);
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {}
-//        });
-//    }
-//
-//    private void loadCompaniesForJob(String jobTitle) {
-//        jobsRef.orderByChild("jobTitle").equalTo(jobTitle).addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                List<String> companyNames = new ArrayList<>();
-//                companyMap.clear();
-//                for (DataSnapshot jobSnap : snapshot.getChildren()) {
-//                    String companyId = jobSnap.child("companyId").getValue(String.class);
-//                    String companyName = jobSnap.child("companyName").getValue(String.class);
-//                    if (companyId != null && companyName != null) {
-//                        companyNames.add(companyName);
-//                        companyMap.put(companyName, companyId);
-//                    }
-//                }
-//                ArrayAdapter<String> adapter = new ArrayAdapter<>(ApplyJobActivity.this, android.R.layout.simple_spinner_item, companyNames);
-//                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                spCompany.setAdapter(adapter);
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {}
-//        });
-//    }
-//
-//    private void fetchJobDetails(String companyId, String jobTitle) {
-//        jobsRef.orderByChild("companyId").equalTo(companyId).addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                for (DataSnapshot jobSnap : snapshot.getChildren()) {
-//                    if (jobSnap.child("jobTitle").getValue(String.class).equals(jobTitle)) {
-//                        selectedSkills = jobSnap.child("skills").getValue(String.class);
-//                        selectedJobCgpa = jobSnap.child("cgpa").getValue(String.class);
-//                        tvSkills.setText(selectedSkills);
-//                        break;
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {}
-//        });
-//    }
-//
-//    private void applyForJob() {
-//        String fullName = etFullName.getText().toString();
-//        String email = etEmail.getText().toString();
-//        String address = etAddress.getText().toString();
-//        String branch = etBranch.getText().toString();
-//        String cgpa = etCgpa.getText().toString();
-//        String reason = etReason.getText().toString();
-//        String resume = etResume.getText().toString();
-//
-//        if (Double.parseDouble(cgpa) < Double.parseDouble(selectedJobCgpa)) {
-//            Toast.makeText(this, "You do not meet the CGPA requirement.", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//
-//        String applicationId = applicationsRef.push().getKey();
-//        FirebaseUser user = mAuth.getCurrentUser();
-//        String studentId = (user != null) ? user.getUid() : "Unknown";
-//
-//        Application application = new Application(applicationId, studentId, selectedJobTitle, selectedCompanyId,
-//                selectedJobTitle, selectedCompanyName, selectedSkills, fullName, email, address, branch, cgpa,
-//                reason, resume, "Pending");
-//
-//        applicationsRef.child(selectedCompanyId).child(applicationId).setValue(application);
-//        globalAppsRef.child(applicationId).setValue(application);
-//
-//        Toast.makeText(this, "Application Submitted!", Toast.LENGTH_SHORT).show();
-//        finish();
-//    }
-//}
-
 package com.example.crs2025.student;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.crs2025.R;
 import com.example.crs2025.models.Application;
+import com.example.crs2025.models.Job;
+import com.example.crs2025.models.User;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.*;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 
 public class ApplyJobActivity extends AppCompatActivity {
 
-    private Spinner spJobTitle, spCompany;
-    private TextView tvSkills;
-    private EditText etFullName, etEmail, etAddress, etBranch, etCgpa, etReason, etResume;
-    private Button btnApply, btnGoBack;
-    private DatabaseReference jobsRef, applicationsRef, globalAppsRef;
+    private TextView tvJobTitle, tvCompanyName, tvSkills, tvCgpa;
+    private EditText etReasonToApply, etResumeLink;
+    private Button btnSubmitApplication;
+
+    private Job selectedJob;
+    private User student;
+
+    private DatabaseReference applicationsRef;
+    private DatabaseReference studentApplicationsRef;
+    private DatabaseReference userRef;
+
     private FirebaseAuth mAuth;
-    private String selectedJobTitle, selectedCompanyId, selectedCompanyName, selectedSkills, selectedJobCgpa;
-    private Map<String, List<JobDetails>> jobMap = new HashMap<>();
-    private Map<String, JobDetails> companyJobMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_apply_job);
 
-        // Initialize views
-        spJobTitle = findViewById(R.id.sp_job_title);
-        spCompany = findViewById(R.id.sp_company);
-        tvSkills = findViewById(R.id.tv_skills);
-        etFullName = findViewById(R.id.et_full_name);
-        etEmail = findViewById(R.id.et_email);
-        etAddress = findViewById(R.id.et_address);
-        etBranch = findViewById(R.id.et_branch);
-        etCgpa = findViewById(R.id.et_cgpa);
-        etReason = findViewById(R.id.et_reason);
-        etResume = findViewById(R.id.et_resume);
-        btnApply = findViewById(R.id.btn_apply);
-        btnGoBack = findViewById(R.id.btn_go_back);
-
-        // Initialize Firebase
-        mAuth = FirebaseAuth.getInstance();
-        jobsRef = FirebaseDatabase.getInstance().getReference("globalJobs");
-        applicationsRef = FirebaseDatabase.getInstance().getReference("applications");
-        globalAppsRef = FirebaseDatabase.getInstance().getReference("globalApplications");
-
-        // Load job titles dynamically
-        loadJobTitles();
-
-        // Handle job selection to load companies dynamically
-        spJobTitle.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedJobTitle = parent.getItemAtPosition(position).toString();
-                loadCompaniesForJob(selectedJobTitle);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
-
-        // Handle company selection to display job details
-        spCompany.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedCompanyName = parent.getItemAtPosition(position).toString();
-                JobDetails jobDetails = companyJobMap.get(selectedCompanyName);
-                if (jobDetails != null) {
-                    selectedCompanyId = jobDetails.companyId;
-                    selectedSkills = jobDetails.skills;
-                    selectedJobCgpa = jobDetails.cgpa;
-                    tvSkills.setText(selectedSkills);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
-
-        // Apply Job Button Click
-        btnApply.setOnClickListener(v -> applyForJob());
-        btnGoBack.setOnClickListener(v -> finish());
-    }
-
-    private void loadJobTitles() {
-        jobsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<String> jobTitles = new ArrayList<>();
-                jobMap.clear();
-
-                for (DataSnapshot jobSnap : snapshot.getChildren()) {
-                    String jobId = jobSnap.getKey();
-                    String jobTitle = jobSnap.child("jobTitle").getValue(String.class);
-                    String companyId = jobSnap.child("companyId").getValue(String.class);
-                    String companyName = jobSnap.child("companyName").getValue(String.class);
-                    String skills = jobSnap.child("skills").getValue(String.class);
-                    String cgpa = jobSnap.child("cgpa").getValue(String.class);
-
-                    if (jobTitle != null && companyId != null && companyName != null) {
-                        JobDetails jobDetails = new JobDetails(jobId, companyId, companyName, skills, cgpa);
-                        jobMap.putIfAbsent(jobTitle, new ArrayList<>());
-                        jobMap.get(jobTitle).add(jobDetails);
-
-                        if (!jobTitles.contains(jobTitle)) {
-                            jobTitles.add(jobTitle);
-                        }
-                    }
-                }
-
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(ApplyJobActivity.this, android.R.layout.simple_spinner_item, jobTitles);
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spJobTitle.setAdapter(adapter);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
-        });
-    }
-
-    private void loadCompaniesForJob(String jobTitle) {
-        List<JobDetails> companyList = jobMap.get(jobTitle);
-        if (companyList != null) {
-            List<String> companyNames = new ArrayList<>();
-            companyJobMap.clear();
-            for (JobDetails jobDetails : companyList) {
-                companyNames.add(jobDetails.companyName);
-                companyJobMap.put(jobDetails.companyName, jobDetails);
-            }
-
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(ApplyJobActivity.this, android.R.layout.simple_spinner_item, companyNames);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spCompany.setAdapter(adapter);
+        // --- Toolbar Setup ---
+        MaterialToolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);
         }
-    }
 
-    private void applyForJob() {
-        String fullName = etFullName.getText().toString();
-        String email = etEmail.getText().toString();
-        String address = etAddress.getText().toString();
-        String branch = etBranch.getText().toString();
-        String cgpa = etCgpa.getText().toString();
-        String reason = etReason.getText().toString();
-        String resume = etResume.getText().toString();
+        // --- Initialize Views ---
+        tvJobTitle = findViewById(R.id.tv_job_title);
+        tvCompanyName = findViewById(R.id.tv_company_name);
+        tvSkills = findViewById(R.id.tv_skills);
+        tvCgpa = findViewById(R.id.tv_cgpa);
+        etReasonToApply = findViewById(R.id.et_reason_to_apply);
+        etResumeLink = findViewById(R.id.et_resume_link);
+        btnSubmitApplication = findViewById(R.id.btn_submit_application);
 
-        if (selectedJobCgpa != null && Double.parseDouble(cgpa) < Double.parseDouble(selectedJobCgpa)) {
-            Toast.makeText(this, "You do not meet the CGPA requirement.", Toast.LENGTH_SHORT).show();
+        // --- Get Data from Intent ---
+        selectedJob = (Job) getIntent().getSerializableExtra("JOB_DATA");
+        if (selectedJob == null) {
+            Toast.makeText(this, "Error: Job data not found.", Toast.LENGTH_LONG).show();
+            finish();
             return;
         }
 
-        String applicationId = applicationsRef.push().getKey();
-        FirebaseUser user = mAuth.getCurrentUser();
-        String studentId = (user != null) ? user.getUid() : "Unknown";
+        // --- Firebase Setup ---
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser == null) {
+            Toast.makeText(this, "You need to be logged in to apply.", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
+        String studentId = currentUser.getUid();
+        userRef = FirebaseDatabase.getInstance().getReference("users").child(studentId);
+        applicationsRef = FirebaseDatabase.getInstance().getReference("applications");
+        studentApplicationsRef = FirebaseDatabase.getInstance().getReference("studentApplications");
 
-        Application application = new Application(applicationId, studentId, selectedJobTitle, selectedCompanyId,
-                selectedJobTitle, selectedCompanyName, selectedSkills, fullName, email, address, branch, cgpa,
-                reason, resume, "Pending");
+        // --- Populate UI and Fetch Student Data ---
+        populateJobDetails();
+        fetchStudentData();
 
-        applicationsRef.child(selectedCompanyId).child(applicationId).setValue(application);
-        globalAppsRef.child(applicationId).setValue(application);
-
-        Toast.makeText(this, "Application Submitted!", Toast.LENGTH_SHORT).show();
-        finish();
+        // --- Set Click Listener ---
+        btnSubmitApplication.setOnClickListener(v -> submitApplication());
     }
 
-    // Helper class for storing job details
-    private static class JobDetails {
-        String jobId, companyId, companyName, skills, cgpa;
+    private void populateJobDetails() {
+        tvJobTitle.setText(selectedJob.getJobTitle());
+        tvCompanyName.setText(selectedJob.getCompanyName());
+        tvSkills.setText("Skills Required: " + selectedJob.getSkills());
+        tvCgpa.setText("Minimum CGPA: " + selectedJob.getCgpa());
+    }
 
-        JobDetails(String jobId, String companyId, String companyName, String skills, String cgpa) {
-            this.jobId = jobId;
-            this.companyId = companyId;
-            this.companyName = companyName;
-            this.skills = skills;
-            this.cgpa = cgpa;
+    private void fetchStudentData() {
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                student = snapshot.getValue(User.class);
+                if (student == null) {
+                    Toast.makeText(ApplyJobActivity.this, "Could not fetch student profile.", Toast.LENGTH_SHORT).show();
+                    btnSubmitApplication.setEnabled(false);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(ApplyJobActivity.this, "Database error while fetching profile.", Toast.LENGTH_SHORT).show();
+                btnSubmitApplication.setEnabled(false);
+            }
+        });
+    }
+
+    private void submitApplication() {
+        String reason = etReasonToApply.getText().toString().trim();
+        String resumeLink = etResumeLink.getText().toString().trim();
+
+        if (TextUtils.isEmpty(reason) || TextUtils.isEmpty(resumeLink)) {
+            Toast.makeText(this, "Please fill all application fields.", Toast.LENGTH_SHORT).show();
+            return;
         }
+
+        if (student == null) {
+            Toast.makeText(this, "Student profile not loaded yet. Please wait.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        try {
+            double studentCgpa = Double.parseDouble(student.getCgpa());
+            double requiredCgpa = Double.parseDouble(selectedJob.getCgpa());
+            if (studentCgpa < requiredCgpa) {
+                new AlertDialog.Builder(this)
+                    .setTitle("CGPA Requirement Not Met")
+                    .setMessage("Your CGPA (" + studentCgpa + ") is below the minimum required for this job (" + requiredCgpa + ").")
+                    .setPositiveButton("OK", null)
+                    .show();
+                return;
+            }
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Your profile CGPA is invalid. Please update it.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        String applicationId = UUID.randomUUID().toString();
+        String studentId = student.getUserId();
+
+        Application application = new Application(
+                applicationId,
+                studentId,
+                selectedJob.getJobId(),
+                selectedJob.getCompanyId(),
+                selectedJob.getJobTitle(),
+                selectedJob.getCompanyName(),
+                student.getSkills(),
+                student.getName(),
+                student.getEmail(),
+                student.getAddress(),
+                student.getBranch(),
+                student.getCgpa(),
+                reason,
+                resumeLink,
+                "Pending"
+        );
+
+        // Save to company-specific list
+        applicationsRef.child(selectedJob.getCompanyId()).child(applicationId).setValue(application);
+
+        // Save to student-specific list
+        studentApplicationsRef.child(studentId).child(applicationId).setValue(application)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(ApplyJobActivity.this, "Application Submitted Successfully!", Toast.LENGTH_LONG).show();
+                    finish();
+                })
+                .addOnFailureListener(e -> Toast.makeText(ApplyJobActivity.this, "Failed to submit application: " + e.getMessage(), Toast.LENGTH_LONG).show());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

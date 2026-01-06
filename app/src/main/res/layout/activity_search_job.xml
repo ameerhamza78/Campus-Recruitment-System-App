@@ -1,103 +1,77 @@
-<!--<?xml version="1.0" encoding="utf-8"?>-->
-<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--    android:layout_width="match_parent"-->
-<!--    android:layout_height="match_parent"-->
-<!--    android:orientation="vertical"-->
-<!--    android:padding="16dp">-->
-
-<!--    &lt;!&ndash; Search Bar &ndash;&gt;-->
-<!--    <EditText-->
-<!--        android:id="@+id/et_search"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="48sp"-->
-<!--        android:hint="Search Jobs..."-->
-<!--        android:padding="12dp"-->
-<!--        android:background="@android:drawable/editbox_background"-->
-<!--        android:textSize="16sp" />-->
-
-<!--    &lt;!&ndash; Job List &ndash;&gt;-->
-<!--    <ListView-->
-<!--        android:id="@+id/lv_jobs"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:divider="@android:color/darker_gray"-->
-<!--        android:dividerHeight="1dp"-->
-<!--        android:paddingTop="8dp"/>-->
-
-<!--    <Button-->
-<!--        android:id="@+id/btn_apply_job"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="Apply Job"-->
-<!--        android:backgroundTint="@android:color/holo_blue_dark"-->
-<!--        android:textColor="@android:color/white"-->
-<!--        android:textSize="18sp"-->
-<!--        android:layout_gravity="center"/>-->
-<!--</LinearLayout>-->
-
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:background="?attr/colorSurface">
+    android:background="#F5F5F5"
+    tools:context=".student.SearchJobActivity">
+
+    <!-- Header Toolbar -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/brand_blue"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:title="Search for Jobs"
+            app:titleTextColor="@android:color/white" />
+    </com.google.android.material.appbar.AppBarLayout>
 
     <!-- Search Bar -->
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/search_bar_layout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:boxStrokeColor="?attr/colorPrimary"
-        app:boxCornerRadiusTopStart="12dp"
-        app:boxCornerRadiusTopEnd="12dp"
-        app:endIconMode="custom">
+        android:layout_below="@id/app_bar_layout"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        app:endIconMode="clear_text">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_search"
+            android:id="@+id/et_search_jobs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Search Jobs..."
-            android:textSize="16sp"/>
+            android:hint="Search by title or company"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:maxLines="1" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Job List inside a CardView -->
-    <com.google.android.material.card.MaterialCardView
+    <!-- List of Jobs -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_jobs"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="4dp"
-        android:layout_marginTop="12dp"
-        android:padding="8dp">
+        android:layout_height="match_parent"
+        android:layout_below="@id/search_bar_layout"
+        android:clipToPadding="false"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        tools:listitem="@layout/item_job_student_view" />
 
-        <ListView
-            android:id="@+id/lv_jobs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:divider="@color/material_on_surface_variant"
-            android:dividerHeight="1dp"
-            android:padding="8dp" />
-    </com.google.android.material.card.MaterialCardView>
-
-    <!-- Apply Button -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_apply_job"
+    <!-- Empty State -->
+    <TextView
+        android:id="@+id/tv_no_jobs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Apply Jobs"
-        android:layout_marginTop="12dp"
-        app:cornerRadius="16dp"
-        android:layout_gravity="center"
-        android:backgroundTint="#00A8E8"
-        android:fontFamily="monospace"
+        android:layout_centerInParent="true"
+        android:text="No jobs found."
         android:textSize="18sp"
-        android:textStyle="bold"/>
+        android:visibility="gone" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_go_back"
+    <!-- Loading Indicator -->
+    <ProgressBar
+        android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Go Back"
-        style="@style/GoBack"
-        app:cornerRadius="12dp"/>
-</LinearLayout>
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+</RelativeLayout>

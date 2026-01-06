@@ -2,51 +2,72 @@ package com.example.crs2025.models;
 
 public class Feedback {
     private String feedbackId;
-    private String userId;
-    private String name;
-    private String email;
-    private String satisfaction;
-    private String improvementSuggestions;
-    private String additionalComments;
-    private String recommendation;
+    private String authorId;
+    private String authorName;
+    private String authorRole; // "student" or "company"
+    private String feedbackText;
+    private long timestamp;
 
     public Feedback() {
-        // Default constructor required for Firebase
+        // Default constructor required for calls to DataSnapshot.getValue(Feedback.class)
     }
 
-    public Feedback(String feedbackId, String userId, String name, String email, String satisfaction, String improvementSuggestions, String additionalComments, String recommendation) {
+    public Feedback(String feedbackId, String authorId, String authorName, String authorRole, String feedbackText, long timestamp) {
         this.feedbackId = feedbackId;
-        this.userId = userId;
-        this.name = name;
-        this.email = email;
-        this.satisfaction = satisfaction;
-        this.improvementSuggestions = improvementSuggestions;
-        this.additionalComments = additionalComments;
-        this.recommendation = recommendation;
+        this.authorId = authorId;
+        this.authorName = authorName;
+        this.authorRole = authorRole;
+        this.feedbackText = feedbackText;
+        this.timestamp = timestamp;
     }
 
-    // Getters and Setters
+    // --- Getters and Setters ---
 
-    public String getFeedbackId() { return feedbackId; }
-    public void setFeedbackId(String feedbackId) { this.feedbackId = feedbackId; }
-    public String getUserId() { return userId; }
-    public void setUserId(String userId) { this.userId = userId; }
+    public String getFeedbackId() {
+        return feedbackId;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public void setFeedbackId(String feedbackId) {
+        this.feedbackId = feedbackId;
+    }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public String getAuthorId() {
+        return authorId;
+    }
 
-    public String getSatisfaction() { return satisfaction; }
-    public void setSatisfaction(String satisfaction) { this.satisfaction = satisfaction; }
+    public void setAuthorId(String authorId) {
+        this.authorId = authorId;
+    }
 
-    public String getImprovementSuggestions() { return improvementSuggestions; }
-    public void setImprovementSuggestions(String improvementSuggestions) { this.improvementSuggestions = improvementSuggestions; }
+    public String getAuthorName() {
+        return authorName;
+    }
 
-    public String getAdditionalComments() { return additionalComments; }
-    public void setAdditionalComments(String additionalComments) { this.additionalComments = additionalComments; }
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
+    }
 
-    public String getRecommendation() { return recommendation; }
-    public void setRecommendation(String recommendation) { this.recommendation = recommendation; }
+    public String getAuthorRole() {
+        return authorRole;
+    }
+
+    public void setAuthorRole(String authorRole) {
+        this.authorRole = authorRole;
+    }
+
+    public String getFeedbackText() {
+        return feedbackText;
+    }
+
+    public void setFeedbackText(String feedbackText) {
+        this.feedbackText = feedbackText;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
 }

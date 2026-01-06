@@ -1,98 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@android:color/white"
-    android:padding="16dp">
+    android:background="#F5F5F5"
+    tools:context=".admin.ManageFeedbacksActivity">
 
-    <LinearLayout
+    <!-- Header Toolbar -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Manage Feedbacks"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:fontFamily="monospace"
-            android:layout_marginBottom="10dp"
-            android:layout_gravity="center_horizontal"/>
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/brand_blue"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:title="Manage Feedbacks"
+            app:titleTextColor="@android:color/white" />
 
-    <LinearLayout
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Unified List of all Feedbacks -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_feedbacks"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/app_bar_layout"
+        android:clipToPadding="false"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        tools:listitem="@layout/item_feedback" />
+
+    <!-- Empty State Text (FIXED) -->
+    <TextView
+        android:id="@+id/tv_no_feedbacks"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_centerInParent="true"
+        android:text="No feedbacks submitted yet."
+        android:textSize="18sp"
+        android:visibility="gone" />
 
-        <!-- Student Feedback Section -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Student Feedbacks"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/black"
-            android:layout_marginTop="10dp"
-            android:paddingBottom="5dp"/>
+    <!-- Loading Indicator -->
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_student_feedbacks"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:scrollbars="vertical"/>
-
-        <Button
-            android:id="@+id/btn_delete_student_feedbacks"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Delete Selected Student Feedbacks"
-            android:layout_gravity="center"
-            android:fontFamily="monospace"
-            android:textStyle="bold"
-            android:backgroundTint="#e01e37"
-            android:layout_marginTop="10dp"
-            app:cornerRadius="12dp"/>
-
-        <!-- Company Feedback Section -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Company Feedbacks"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/black"
-            android:layout_marginTop="20dp"
-            android:paddingBottom="5dp"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_company_feedbacks"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:scrollbars="vertical"/>
-
-        <Button
-            android:id="@+id/btn_delete_company_feedbacks"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Delete Selected Company Feedbacks"
-            android:layout_gravity="center"
-            android:fontFamily="monospace"
-            android:textStyle="bold"
-            android:backgroundTint="#e01e37"
-            android:layout_marginTop="10dp"
-            app:cornerRadius="12dp" />
-    </LinearLayout>
-
-        <Button
-            android:id="@+id/btn_go_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Go Back"
-            style="@style/GoBack"
-            app:cornerRadius="12dp"/>
-
-    </LinearLayout>
-</ScrollView>
+</RelativeLayout>
