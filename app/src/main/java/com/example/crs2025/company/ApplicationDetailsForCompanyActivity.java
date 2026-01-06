@@ -12,8 +12,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.crs2025.R;
 import com.example.crs2025.models.Application;
+import com.example.crs2025.models.User;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class ApplicationDetailsForCompanyActivity extends AppCompatActivity {
 
@@ -23,16 +27,15 @@ public class ApplicationDetailsForCompanyActivity extends AppCompatActivity {
     private Application currentApplication;
     private DatabaseReference applicationRef;
     private DatabaseReference globalApplicationRef;
+    private DatabaseReference studentRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_application_details_for_company);
 
-        // Initialize Views
         initializeViews();
 
-        // Get the entire Application object passed from the previous screen
         currentApplication = (Application) getIntent().getSerializableExtra("APPLICATION_DATA");
 
         if (currentApplication == null) {
@@ -41,17 +44,19 @@ public class ApplicationDetailsForCompanyActivity extends AppCompatActivity {
             return;
         }
 
-        // Set up the correct Firebase references
+        // Set up Firebase references
         applicationRef = FirebaseDatabase.getInstance().getReference("applications")
                 .child(currentApplication.getCompanyId())
                 .child(currentApplication.getApplicationId());
         globalApplicationRef = FirebaseDatabase.getInstance().getReference("globalApplications")
                 .child(currentApplication.getApplicationId());
+        // ** THE FIX **: Reference the specific student's user profile
+        studentRef = FirebaseDatabase.getInstance().getReference("users").child(currentApplication.getStudentId());
 
-        // Populate the UI with the data we already have
+        // Populate UI
         populateApplicationDetails();
+        fetchAndPopulateStudentDetails();
 
-        // Set up button listeners
         setupClickListeners();
     }
 
@@ -68,7 +73,7 @@ public class ApplicationDetailsForCompanyActivity extends AppCompatActivity {
 
         btnApprove = findViewById(R.id.btn_approve);
         btnReject = findViewById(R.id.btn_reject);
-        btnScheduleInterview = findViewById(R.id.btn_schedule_interview); // Find the new button
+        btnScheduleInterview = findViewById(R.id.btn_schedule_interview);
         btnGoBack = findViewById(R.id.btn_go_back);
     }
 
@@ -76,12 +81,33 @@ public class ApplicationDetailsForCompanyActivity extends AppCompatActivity {
         tvJobTitle.setText(currentApplication.getJobTitle());
         tvFullName.setText(currentApplication.getFullName());
         tvEmail.setText(currentApplication.getEmail());
-        tvAddress.setText(currentApplication.getAddress());
-        tvBranch.setText(currentApplication.getBranch());
-        tvCgpa.setText(currentApplication.getCgpa());
         tvReason.setText(currentApplication.getReasonToApply());
         tvResume.setText(currentApplication.getResumeLink());
         tvStatus.setText(currentApplication.getStatus());
+    }
+
+    // ** THE FIX **: New method to fetch details from the User model
+    private void fetchAndPopulateStudentDetails() {
+        studentRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    User student = snapshot.getValue(User.class);
+                    if (student != null) {
+                        tvAddress.setText(student.getAddress());
+                        tvBranch.setText(student.getBranch());
+                        tvCgpa.setText(student.getCgpa());
+                    }
+                } else {
+                    Toast.makeText(ApplicationDetailsForCompanyActivity.this, "Could not find student profile.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(ApplicationDetailsForCompanyActivity.this, "Failed to load student details.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void setupClickListeners() {
@@ -89,22 +115,19 @@ public class ApplicationDetailsForCompanyActivity extends AppCompatActivity {
         btnReject.setOnClickListener(v -> updateApplicationStatus("Rejected"));
         btnGoBack.setOnClickListener(v -> finish());
 
-        // ** THE FIX **: Add the click listener for our new button
         btnScheduleInterview.setOnClickListener(v -> {
             Intent intent = new Intent(ApplicationDetailsForCompanyActivity.this, ScheduleInterviewActivity.class);
-            // Pass the complete Application object to the next screen
             intent.putExtra("APPLICATION_DATA", currentApplication);
             startActivity(intent);
         });
     }
 
     private void updateApplicationStatus(String status) {
-        // Update the status in both database locations
         applicationRef.child("status").setValue(status);
         globalApplicationRef.child("status").setValue(status)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(ApplicationDetailsForCompanyActivity.this, "Application status updated to " + status, Toast.LENGTH_SHORT).show();
-                    tvStatus.setText(status); // Update the UI immediately
+                    tvStatus.setText(status);
                 })
                 .addOnFailureListener(e -> Toast.makeText(ApplicationDetailsForCompanyActivity.this, "Failed to update status.", Toast.LENGTH_SHORT).show());
     }

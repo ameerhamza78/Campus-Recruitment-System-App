@@ -163,7 +163,6 @@ public class ManageCompaniesActivity extends AppCompatActivity implements Compan
                 .setPositiveButton("Delete", (dialog, which) -> {
                     for (int position : selectedItemPositions) {
                         User companyToDelete = companyList.get(position);
-                        // ** THE FIX **: Use the correct getUserId() method
                         usersRef.child(companyToDelete.getUserId()).removeValue();
                     }
                     Toast.makeText(this, selectedItemPositions.size() + " companies deleted.", Toast.LENGTH_SHORT).show();
@@ -187,7 +186,6 @@ public class ManageCompaniesActivity extends AppCompatActivity implements Compan
                         .setTitle("Delete Company")
                         .setMessage("Are you sure you want to delete " + companyToDelete.getName() + "?")
                         .setPositiveButton("Delete", (dialog, which) -> {
-                            // ** THE FIX **: Use the correct getUserId() method
                             usersRef.child(companyToDelete.getUserId()).removeValue()
                                     .addOnSuccessListener(aVoid -> Toast.makeText(ManageCompaniesActivity.this, "Company deleted.", Toast.LENGTH_SHORT).show())
                                     .addOnFailureListener(e -> Toast.makeText(ManageCompaniesActivity.this, "Failed to delete company.", Toast.LENGTH_SHORT).show());

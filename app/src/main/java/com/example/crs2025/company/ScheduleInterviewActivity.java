@@ -2,189 +2,175 @@ package com.example.crs2025.company;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.*;
+import android.text.TextUtils;
+import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.crs2025.R;
+import com.example.crs2025.models.Application;
 import com.example.crs2025.models.Interview;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.*;
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
+import java.util.UUID;
 
 public class ScheduleInterviewActivity extends AppCompatActivity {
 
-    private Spinner spJobTitle, spStudentName, spInterviewType;
-    private EditText etVenue, etDate, etTime;
-    private Button btnSchedule, btnPreviousInterviews, btnGoBack;
-    private DatabaseReference applicationsRef, interviewsRef, globalInterviewsRef, jobsRef, usersRef;
-    private FirebaseAuth mAuth;
-    private String companyId, companyName;
-    private String selectedJobTitle, selectedStudentId, selectedStudentName, selectedInterviewType;
+    private TextView tvJobTitle, tvStudentName, tvSelectedDate, tvSelectedTime;
+    private Button btnSelectDate, btnSelectTime, btnSchedule, btnGoBack;
+    private Spinner spInterviewType;
+    private TextInputEditText etVenue;
+
+    private Application currentApplication;
+    private DatabaseReference interviewsRef, studentInterviewsRef, globalAppsRef, companyAppsRef;
+
+    private int mYear, mMonth, mDay, mHour, mMinute;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule_interview);
 
-        spJobTitle = findViewById(R.id.sp_job_title);
-        spStudentName = findViewById(R.id.sp_student_name);
-        spInterviewType = findViewById(R.id.sp_interview_type);
-        etVenue = findViewById(R.id.et_venue);
-        etDate = findViewById(R.id.et_date);
-        etTime = findViewById(R.id.et_time);
-        btnSchedule = findViewById(R.id.btn_schedule);
-        btnPreviousInterviews = findViewById(R.id.btn_previous_interviews);
-        btnGoBack = findViewById(R.id.btn_go_back);
-        btnGoBack.setOnClickListener(v -> finish());
+        MaterialToolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);
+        }
 
-        mAuth = FirebaseAuth.getInstance();
-        companyId = mAuth.getCurrentUser().getUid();
-        applicationsRef = FirebaseDatabase.getInstance().getReference("applications").child(companyId);
-        interviewsRef = FirebaseDatabase.getInstance().getReference("interviews").child(companyId);
-        globalInterviewsRef = FirebaseDatabase.getInstance().getReference("globalInterviews");
-        jobsRef = FirebaseDatabase.getInstance().getReference("jobs").child(companyId);
-        usersRef = FirebaseDatabase.getInstance().getReference("users");
+        initializeViews();
 
-        loadCompanyDetails();
-        loadJobTitles();
-        setupInterviewTypeSpinner();
-
-        spJobTitle.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedJobTitle = parent.getItemAtPosition(position).toString();
-                loadApprovedStudents(selectedJobTitle);
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
-
-        spStudentName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedStudentName = parent.getItemAtPosition(position).toString();
-                selectedStudentId = (String) spStudentName.getTag(); // Storing student ID
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
-
-        spInterviewType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedInterviewType = parent.getItemAtPosition(position).toString();
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
-
-        etDate.setOnClickListener(v -> showDatePicker());
-        etTime.setOnClickListener(v -> showTimePicker());
-
-        btnSchedule.setOnClickListener(v -> scheduleInterview());
-
-        btnPreviousInterviews.setOnClickListener(v -> showPreviousInterviews());
-    }
-
-    private void loadCompanyDetails() {
-        usersRef.child("companies").child(companyId).child("name").get().addOnSuccessListener(dataSnapshot -> {
-            companyName = dataSnapshot.getValue(String.class);
-            if (companyName == null) companyName = "Unknown";
-        });
-    }
-
-    private void loadJobTitles() {
-        jobsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<String> jobTitles = new ArrayList<>();
-                for (DataSnapshot jobSnap : snapshot.getChildren()) {
-                    String jobTitle = jobSnap.child("jobTitle").getValue(String.class);
-                    if (jobTitle != null) jobTitles.add(jobTitle);
-                }
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(ScheduleInterviewActivity.this, android.R.layout.simple_spinner_item, jobTitles);
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spJobTitle.setAdapter(adapter);
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
-        });
-    }
-
-    private void loadApprovedStudents(String jobTitle) {
-        applicationsRef.orderByChild("jobTitle").equalTo(jobTitle).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<String> studentNames = new ArrayList<>();
-                for (DataSnapshot appSnap : snapshot.getChildren()) {
-                    String studentId = appSnap.child("studentId").getValue(String.class);
-                    String studentName = appSnap.child("fullName").getValue(String.class);
-                    String status = appSnap.child("status").getValue(String.class);
-                    if (studentId != null && studentName != null && "Approved".equals(status)) {
-                        studentNames.add(studentName);
-                        spStudentName.setTag(studentId); // Store student ID for later use
-                    }
-                }
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(ScheduleInterviewActivity.this, android.R.layout.simple_spinner_item, studentNames);
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spStudentName.setAdapter(adapter);
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
-        });
-    }
-
-    private void showDatePicker() {
-        Calendar calendar = Calendar.getInstance();
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> etDate.setText(dayOfMonth + "/" + (month + 1) + "/" + year), calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
-        datePickerDialog.show();
-    }
-
-    private void showTimePicker() {
-        Calendar calendar = Calendar.getInstance();
-        TimePickerDialog timePickerDialog = new TimePickerDialog(this, (view, hourOfDay, minute) -> etTime.setText(hourOfDay + ":" + minute), calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
-        timePickerDialog.show();
-    }
-
-    private void setupInterviewTypeSpinner() {
-        // Static array for Interview Type
-        String[] interviewTypes = {"Online", "Offline"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, interviewTypes);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spInterviewType.setAdapter(adapter);
-
-        // Default value set to Online
-        spInterviewType.setSelection(0);
-        selectedInterviewType = "Online";
-    }
-    private void scheduleInterview() {
-        String date = etDate.getText().toString();
-        String time = etTime.getText().toString();
-        String venue = etVenue.getText().toString();
-
-        if (date.isEmpty() || time.isEmpty() || venue.isEmpty()) {
-            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+        currentApplication = (Application) getIntent().getSerializableExtra("APPLICATION_DATA");
+        if (currentApplication == null) {
+            Toast.makeText(this, "Error: Application data not found.", Toast.LENGTH_LONG).show();
+            finish();
             return;
         }
 
-        String interviewId = interviewsRef.push().getKey();
-        Interview interview = new Interview(interviewId, companyId, companyName, selectedJobTitle, selectedStudentId, selectedStudentName, date, time, venue, selectedInterviewType);
+        // Database References
+        interviewsRef = FirebaseDatabase.getInstance().getReference("interviews");
+        studentInterviewsRef = FirebaseDatabase.getInstance().getReference("studentInterviews");
+        globalAppsRef = FirebaseDatabase.getInstance().getReference("globalApplications");
+        companyAppsRef = FirebaseDatabase.getInstance().getReference("applications");
 
-        interviewsRef.child(interviewId).setValue(interview);
-        globalInterviewsRef.child(interviewId).setValue(interview)
-                .addOnSuccessListener(aVoid -> Toast.makeText(this, "Interview Scheduled", Toast.LENGTH_SHORT).show())
-                .addOnFailureListener(e -> Toast.makeText(this, "Failed to schedule interview", Toast.LENGTH_SHORT).show());
+
+        populateDetails();
+        setupListeners();
     }
 
-    private void showPreviousInterviews() {
-        startActivity(new Intent(ScheduleInterviewActivity.this, PreviousInterviewsActivity.class));
+    private void initializeViews() {
+        tvJobTitle = findViewById(R.id.tv_job_title);
+        tvStudentName = findViewById(R.id.tv_student_name);
+        tvSelectedDate = findViewById(R.id.tv_selected_date);
+        tvSelectedTime = findViewById(R.id.tv_selected_time);
+        btnSelectDate = findViewById(R.id.btn_select_date);
+        btnSelectTime = findViewById(R.id.btn_select_time);
+        btnSchedule = findViewById(R.id.btn_schedule);
+        btnGoBack = findViewById(R.id.btn_go_back);
+        spInterviewType = findViewById(R.id.sp_interview_type);
+        etVenue = findViewById(R.id.et_venue);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.interview_types, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spInterviewType.setAdapter(adapter);
+    }
+
+    private void populateDetails() {
+        tvJobTitle.setText(currentApplication.getJobTitle());
+        tvStudentName.setText("For: " + currentApplication.getFullName());
+    }
+
+    private void setupListeners() {
+        btnSelectDate.setOnClickListener(v -> openDatePicker());
+        btnSelectTime.setOnClickListener(v -> openTimePicker());
+        btnSchedule.setOnClickListener(v -> scheduleInterview());
+        btnGoBack.setOnClickListener(v -> finish());
+    }
+
+    private void openDatePicker() {
+        final Calendar c = Calendar.getInstance();
+        mYear = c.get(Calendar.YEAR);
+        mMonth = c.get(Calendar.MONTH);
+        mDay = c.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year, monthOfYear, dayOfMonth) -> {
+            String selectedDate = dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
+            tvSelectedDate.setText(selectedDate);
+        }, mYear, mMonth, mDay);
+        datePickerDialog.show();
+    }
+
+    private void openTimePicker() {
+        final Calendar c = Calendar.getInstance();
+        mHour = c.get(Calendar.HOUR_OF_DAY);
+        mMinute = c.get(Calendar.MINUTE);
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this, (view, hourOfDay, minute) -> {
+            String selectedTime = String.format("%02d:%02d", hourOfDay, minute);
+            tvSelectedTime.setText(selectedTime);
+        }, mHour, mMinute, false);
+        timePickerDialog.show();
+    }
+
+    private void scheduleInterview() {
+        String date = tvSelectedDate.getText().toString();
+        String time = tvSelectedTime.getText().toString();
+        String venue = etVenue.getText().toString().trim();
+        String interviewType = spInterviewType.getSelectedItem().toString();
+
+        if (TextUtils.isEmpty(date) || date.equals("YYYY-MM-DD") || TextUtils.isEmpty(time) || time.equals("HH:MM") || TextUtils.isEmpty(venue)) {
+            Toast.makeText(this, "Please select date, time, and specify a venue.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String interviewId = UUID.randomUUID().toString();
+
+        Interview interview = new Interview(
+                interviewId, currentApplication.getApplicationId(), currentApplication.getStudentId(),
+                currentApplication.getCompanyId(), currentApplication.getJobTitle(),
+                currentApplication.getFullName(), currentApplication.getCompanyName(),
+                date, time, venue, interviewType, "Scheduled"
+        );
+
+        interviewsRef.child(interviewId).setValue(interview);
+        studentInterviewsRef.child(currentApplication.getStudentId()).child(interviewId).setValue(interview)
+                .addOnSuccessListener(aVoid -> {
+                    updateApplicationStatus();
+                    Toast.makeText(ScheduleInterviewActivity.this, "Interview Scheduled Successfully", Toast.LENGTH_SHORT).show();
+                    finish();
+                })
+                .addOnFailureListener(e -> Toast.makeText(ScheduleInterviewActivity.this, "Failed to schedule interview.", Toast.LENGTH_SHORT).show());
+    }
+
+    private void updateApplicationStatus() {
+        String companyId = currentApplication.getCompanyId();
+        String studentId = currentApplication.getStudentId();
+        String applicationId = currentApplication.getApplicationId();
+        String status = "Interview Scheduled";
+
+        if (companyId != null) companyAppsRef.child(companyId).child(applicationId).child("status").setValue(status);
+        if (applicationId != null) globalAppsRef.child(applicationId).child("status").setValue(status);
+        if (studentId != null) FirebaseDatabase.getInstance().getReference("studentApplications").child(studentId).child(applicationId).child("status").setValue(status);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

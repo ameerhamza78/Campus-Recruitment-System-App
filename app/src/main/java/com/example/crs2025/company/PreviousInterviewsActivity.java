@@ -3,7 +3,6 @@ package com.example.crs2025.company;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -30,11 +29,13 @@ public class PreviousInterviewsActivity extends AppCompatActivity {
     private ListView lvInterviews;
     private TextView tvNoInterviews;
     private Button btnGoBack;
+
+    private List<Interview> interviewList = new ArrayList<>();
+    private List<String> interviewDisplayList = new ArrayList<>();
+    private ArrayAdapter<String> adapter;
+
     private DatabaseReference interviewsRef;
     private FirebaseAuth mAuth;
-    private List<Interview> interviewList;
-    private ArrayAdapter<String> adapter;
-    private List<String> interviewDisplayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,56 +46,55 @@ public class PreviousInterviewsActivity extends AppCompatActivity {
         tvNoInterviews = findViewById(R.id.tv_no_interviews);
         btnGoBack = findViewById(R.id.btn_go_back);
 
-        mAuth = FirebaseAuth.getInstance();
-        String companyId = mAuth.getCurrentUser().getUid();
-        interviewsRef = FirebaseDatabase.getInstance().getReference("interviews").child(companyId);
-
-        interviewList = new ArrayList<>();
-        interviewDisplayList = new ArrayList<>();
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, interviewDisplayList);
         lvInterviews.setAdapter(adapter);
 
-        fetchInterviews();
+        mAuth = FirebaseAuth.getInstance();
+        String companyId = mAuth.getCurrentUser().getUid();
+
+        interviewsRef = FirebaseDatabase.getInstance().getReference("interviews");
+
+        fetchPreviousInterviews(companyId);
 
         lvInterviews.setOnItemClickListener((parent, view, position, id) -> {
             Interview selectedInterview = interviewList.get(position);
             Intent intent = new Intent(PreviousInterviewsActivity.this, InterviewDetailsActivity.class);
             intent.putExtra("interviewId", selectedInterview.getInterviewId());
-            intent.putExtra("companyId", companyId);
             startActivity(intent);
         });
+
         btnGoBack.setOnClickListener(v -> finish());
     }
 
-    private void fetchInterviews() {
-        interviewsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+    private void fetchPreviousInterviews(String companyId) {
+        interviewsRef.orderByChild("companyId").equalTo(companyId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 interviewList.clear();
                 interviewDisplayList.clear();
 
-                if (!snapshot.exists()) {
-                    tvNoInterviews.setVisibility(View.VISIBLE);
-                    lvInterviews.setVisibility(View.GONE);
-                    return;
-                }
-
-                tvNoInterviews.setVisibility(View.GONE);
-                lvInterviews.setVisibility(View.VISIBLE);
-
-                for (DataSnapshot interviewSnap : snapshot.getChildren()) {
-                    Interview interview = interviewSnap.getValue(Interview.class);
-                    if (interview != null) {
-                        interviewList.add(interview);
-                        interviewDisplayList.add(interview.getJobTitle() + " - " + interview.getStudentName() + " (" + interview.getDate() + ")");
+                if (snapshot.exists()) {
+                    for (DataSnapshot interviewSnap : snapshot.getChildren()) {
+                        Interview interview = interviewSnap.getValue(Interview.class);
+                        if (interview != null) {
+                            interviewList.add(interview);
+                            interviewDisplayList.add(interview.getJobTitle() + " - " + interview.getStudentName() + " (" + interview.getInterviewDate() + ")");
+                        }
                     }
                 }
+
+                if (interviewList.isEmpty()) {
+                    tvNoInterviews.setVisibility(View.VISIBLE);
+                } else {
+                    tvNoInterviews.setVisibility(View.GONE);
+                }
+
                 adapter.notifyDataSetChanged();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(PreviousInterviewsActivity.this, "Failed to fetch interviews", Toast.LENGTH_SHORT).show();
+                Toast.makeText(PreviousInterviewsActivity.this, "Failed to load interviews.", Toast.LENGTH_SHORT).show();
             }
         });
     }

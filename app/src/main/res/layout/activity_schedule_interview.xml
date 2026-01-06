@@ -1,173 +1,152 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="16dp"
-    android:background="@color/background_light">
+    android:background="#F5F5F5"
+    tools:context=".company.ScheduleInterviewActivity">
 
-    <LinearLayout
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <TextView
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Schedule Interviews"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:fontFamily="monospace"
-            android:gravity="center"
-            android:paddingBottom="16dp" />
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/brand_blue"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:title="Schedule Interview"
+            app:titleTextColor="@android:color/white" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/app_bar_layout">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp"
-            android:background="@drawable/rounded_card"
-            android:elevation="4dp"
-            android:layout_gravity="start">
+            android:padding="16dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Select Job Title"
-            android:textStyle="bold"
-            android:paddingTop="10dp" />
+            <TextView
+                android:id="@+id/tv_job_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/brand_blue"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                tools:text="Software Development Intern" />
 
-        <Spinner
-            android:id="@+id/sp_job_title"
-            android:layout_width="match_parent"
-            android:layout_height="48sp"
-            android:padding="8dp" />
+            <TextView
+                android:id="@+id/tv_student_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="#333333"
+                android:textSize="18sp"
+                tools:text="For: John Doe" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Select Student"
-            android:textStyle="bold"
-            android:paddingTop="10dp" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:background="?android:attr/listDivider" />
 
-        <Spinner
-            android:id="@+id/sp_student_name"
-            android:layout_width="match_parent"
-            android:layout_height="48sp"
-            android:padding="8dp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="10dp">
-
-            <!-- Select Date -->
-            <com.google.android.material.textfield.TextInputLayout
+            <!-- Date and Time Selection -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:boxStrokeColor="?attr/colorPrimary"
-                android:paddingBottom="10dp"
-                app:boxCornerRadiusTopStart="8dp"
-                app:boxCornerRadiusTopEnd="8dp"
-                app:endIconMode="clear_text">
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_date"
-                    android:layout_width="match_parent"
+                <Button
+                    android:id="@+id/btn_select_date"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="Select Date"
-                    android:focusable="false"
-                    android:clickable="true"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_weight="1"
+                    android:text="Select Date" />
 
-            <!-- Select Time -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:boxStrokeColor="?attr/colorPrimary"
-                android:paddingBottom="10dp"
-                app:boxCornerRadiusTopStart="8dp"
-                app:boxCornerRadiusTopEnd="8dp"
-                app:endIconMode="clear_text">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_time"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/tv_selected_date"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="Select Time"
-                    android:focusable="false"
-                    android:clickable="true"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_marginStart="16dp"
+                    android:textSize="16sp"
+                    tools:text="2024-08-15" />
+            </LinearLayout>
 
-            <!-- Venue Address -->
-            <com.google.android.material.textfield.TextInputLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:boxStrokeColor="?attr/colorPrimary"
-                android:paddingBottom="10dp"
-                app:boxCornerRadiusTopStart="8dp"
-                app:boxCornerRadiusTopEnd="8dp"
-                app:endIconMode="clear_text">
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <Button
+                    android:id="@+id/btn_select_time"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Select Time" />
+
+                <TextView
+                    android:id="@+id/tv_selected_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:textSize="16sp"
+                    tools:text="10:30 AM" />
+            </LinearLayout>
+
+            <!-- Venue and Type -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/venue_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:hint="Interview Location / Venue">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_venue"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Enter Venue Address"/>
+                    android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <Spinner
+                android:id="@+id/sp_interview_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:padding="12dp" />
+
+            <Button
+                android:id="@+id/btn_schedule"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:padding="14dp"
+                android:text="Schedule Interview"
+                app:backgroundTint="@color/brand_blue"
+                app:cornerRadius="12dp" />
+                
+            <Button
+                android:id="@+id/btn_go_back"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Go Back" />
+
         </LinearLayout>
-
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Interview Type"
-            android:textStyle="bold"
-            android:paddingTop="10dp" />
-
-        <Spinner
-            android:id="@+id/sp_interview_type"
-            android:layout_width="match_parent"
-            android:layout_height="48sp"
-            android:padding="8dp" />
-
-        </LinearLayout>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_schedule"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Schedule Interview"
-            android:layout_marginTop="12dp"
-            app:cornerRadius="16dp"
-            android:layout_gravity="center"
-            android:backgroundTint="@color/purple_500"
-            android:fontFamily="monospace"
-            android:textSize="18sp"
-            android:textStyle="bold"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_previous_interviews"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="View Previous Interview"
-            android:layout_marginTop="12dp"
-            app:cornerRadius="16dp"
-            android:layout_gravity="center"
-            android:backgroundTint="#00A8E8"
-            android:fontFamily="monospace"
-            android:textSize="18sp"
-            android:textStyle="bold"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_go_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Go Back"
-            android:layout_marginTop="16dp"
-            app:cornerRadius="12sp"
-            style="@style/GoBack"/>
-    </LinearLayout>
-
-</ScrollView>
+    </ScrollView>
+</RelativeLayout>

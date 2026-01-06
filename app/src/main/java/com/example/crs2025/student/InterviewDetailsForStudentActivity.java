@@ -1,9 +1,9 @@
 package com.example.crs2025.student;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,29 +14,36 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class InterviewDetailsForStudentActivity extends AppCompatActivity {
 
-    private TextView tvJobTitle, tvCompany, tvDate, tvTime, tvVenue, tvInterviewType;
+    private TextView tvJobTitle, tvCompanyName, tvDate, tvTime, tvVenue, tvInterviewType;
     private Button btnGoBack;
-    private DatabaseReference interviewsRef;
-    private String interviewId;
+    private DatabaseReference interviewRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_interview_details_student);
+        setContentView(R.layout.activity_interview_details_for_student);
 
         tvJobTitle = findViewById(R.id.tv_job_title);
-        tvCompany = findViewById(R.id.tv_company);
+        tvCompanyName = findViewById(R.id.tv_company_name);
         tvDate = findViewById(R.id.tv_date);
         tvTime = findViewById(R.id.tv_time);
         tvVenue = findViewById(R.id.tv_venue);
         tvInterviewType = findViewById(R.id.tv_interview_type);
         btnGoBack = findViewById(R.id.btn_go_back);
 
-        interviewId = getIntent().getStringExtra("interviewId");
-        interviewsRef = FirebaseDatabase.getInstance().getReference("globalInterviews").child(interviewId);
+        String interviewId = getIntent().getStringExtra("interviewId");
+        if (interviewId == null) {
+            Toast.makeText(this, "Interview ID is missing.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        // The reference needs to point to the specific interview
+        interviewRef = FirebaseDatabase.getInstance().getReference("interviews").child(interviewId);
 
         loadInterviewDetails();
 
@@ -44,16 +51,29 @@ public class InterviewDetailsForStudentActivity extends AppCompatActivity {
     }
 
     private void loadInterviewDetails() {
-        interviewsRef.get().addOnSuccessListener(dataSnapshot -> {
-            Interview interview = dataSnapshot.getValue(Interview.class);
-            if (interview != null) {
-                tvJobTitle.setText(interview.getJobTitle());
-                tvCompany.setText(interview.getCompanyName());
-                tvDate.setText(interview.getDate());
-                tvTime.setText(interview.getTime());
-                tvVenue.setText(interview.getVenue());
-                tvInterviewType.setText(interview.getInterviewType());
+        interviewRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    Interview interview = snapshot.getValue(Interview.class);
+                    if (interview != null) {
+                        tvJobTitle.setText(interview.getJobTitle());
+                        tvCompanyName.setText(interview.getCompanyName());
+                        // ** THE FIX **: Use correct method names
+                        tvDate.setText(interview.getInterviewDate());
+                        tvTime.setText(interview.getInterviewTime());
+                        tvVenue.setText(interview.getLocation()); // Standardized to getLocation
+                        tvInterviewType.setText(interview.getInterviewType());
+                    }
+                } else {
+                    Toast.makeText(InterviewDetailsForStudentActivity.this, "Interview details not found.", Toast.LENGTH_SHORT).show();
+                }
             }
-        }).addOnFailureListener(e -> tvJobTitle.setText("Error loading details"));
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(InterviewDetailsForStudentActivity.this, "Failed to load interview details.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

@@ -1,9 +1,9 @@
 package com.example.crs2025.company;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,13 +14,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class InterviewDetailsActivity extends AppCompatActivity {
 
-    private TextView tvJobTitle, tvStudentName, tvDate, tvTime, tvVenue, tvInterviewType, tvCompany;
+    private TextView tvJobTitle, tvStudentName, tvDate, tvTime, tvVenue, tvInterviewType;
     private Button btnGoBack;
-    private DatabaseReference interviewsRef;
-    private String interviewId, companyId;
+    private DatabaseReference interviewRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,13 +33,16 @@ public class InterviewDetailsActivity extends AppCompatActivity {
         tvTime = findViewById(R.id.tv_time);
         tvVenue = findViewById(R.id.tv_venue);
         tvInterviewType = findViewById(R.id.tv_interview_type);
-        tvCompany = findViewById(R.id.tv_company);
         btnGoBack = findViewById(R.id.btn_go_back);
 
-        interviewId = getIntent().getStringExtra("interviewId");
-        companyId = getIntent().getStringExtra("companyId");
+        String interviewId = getIntent().getStringExtra("interviewId");
+        if (interviewId == null) {
+            Toast.makeText(this, "Interview ID is missing.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
-        interviewsRef = FirebaseDatabase.getInstance().getReference("interviews").child(companyId).child(interviewId);
+        interviewRef = FirebaseDatabase.getInstance().getReference("interviews").child(interviewId);
 
         loadInterviewDetails();
 
@@ -47,17 +50,28 @@ public class InterviewDetailsActivity extends AppCompatActivity {
     }
 
     private void loadInterviewDetails() {
-        interviewsRef.get().addOnSuccessListener(dataSnapshot -> {
-            Interview interview = dataSnapshot.getValue(Interview.class);
-            if (interview != null) {
-                tvJobTitle.setText(interview.getJobTitle());
-                tvStudentName.setText(interview.getStudentName());
-                tvDate.setText(interview.getDate());
-                tvTime.setText(interview.getTime());
-                tvVenue.setText(interview.getVenue());
-                tvInterviewType.setText(interview.getInterviewType());
-                tvCompany.setText(interview.getCompanyName());
+        interviewRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    Interview interview = snapshot.getValue(Interview.class);
+                    if (interview != null) {
+                        tvJobTitle.setText(interview.getJobTitle());
+                        tvStudentName.setText(interview.getStudentName());
+                        tvDate.setText(interview.getInterviewDate());
+                        tvTime.setText(interview.getInterviewTime());
+                        tvVenue.setText(interview.getLocation());
+                        tvInterviewType.setText(interview.getInterviewType());
+                    }
+                } else {
+                    Toast.makeText(InterviewDetailsActivity.this, "Interview details not found.", Toast.LENGTH_SHORT).show();
+                }
             }
-        }).addOnFailureListener(e -> tvJobTitle.setText("Error loading details"));
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(InterviewDetailsActivity.this, "Failed to load interview details.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

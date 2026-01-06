@@ -48,7 +48,8 @@ public class InterviewAdapter extends RecyclerView.Adapter<InterviewAdapter.Inte
         holder.tvJobTitle.setText(interview.getJobTitle());
         holder.tvStudentName.setText("Candidate: " + interview.getStudentName());
 
-        String interviewDetails = "Time: " + interview.getTime() + " on " + interview.getDate();
+        // ** THE FIX **: Use the correct method names
+        String interviewDetails = "Time: " + interview.getInterviewTime() + " on " + interview.getInterviewDate();
         holder.tvInterviewDetails.setText(interviewDetails);
 
         holder.itemView.setActivated(selectedItems.get(position, false));
